@@ -5,278 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>context-mode — ClawCon Ankara 2</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/theme/black.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;600;700;900&family=Geist+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --navy:    #0c1220;
-      --card:    #101928;
-      --blue:    #4a7eff;
-      --blue2:   #7bb3ff;
-      --teal:    #77c9eb;
-      --lavender:#c593db;
-      --white:   #f2f5fa;
-      --muted:   #8ba3bf;
-      --border:  rgba(74,126,255,.25);
-    }
+    .reveal-viewport { background: #111213; }
+    .reveal { font-family: 'Inter', sans-serif; color: #e8eaed; }
+    .reveal h1 { font-size: 2.6em; font-weight: 900; color: #fff; line-height: 1.1; letter-spacing: -0.03em; text-transform: none; text-shadow: none; }
+    .reveal h2 { font-size: 1.4em; font-weight: 600; color: #AC9EF5; text-transform: none; text-shadow: none; letter-spacing: -0.01em; }
+    .reveal h3 { font-size: 0.75em; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.1em; text-shadow: none; }
+    .reveal p  { color: #9ca3af; font-size: 0.7em; line-height: 1.6; }
+    .reveal strong { color: #e8eaed; }
+    .reveal section { padding: 0 80px; }
+    .reveal .slides section { background: transparent; }
+    .reveal .slide-number { color: #374151; }
+    .reveal .progress { color: #AC9EF5; }
+    .reveal .controls { color: #AC9EF5; }
 
-    .reveal-viewport { background: var(--navy); }
-
-    .reveal {
-      font-family: 'Geist', sans-serif;
-      font-size: 36px;
-      color: var(--white);
-    }
-
-    .reveal h1, .reveal h2, .reveal h3, .reveal h4 {
-      font-family: 'Geist', sans-serif;
-      font-weight: 700;
-      text-transform: none;
-      letter-spacing: -0.02em;
-      color: var(--white);
-      text-shadow: none;
-    }
-
-    .reveal h1 { font-size: 2.4em; line-height: 1.1; }
-    .reveal h2 { font-size: 1.5em; color: var(--blue2); font-weight: 600; }
-    .reveal h3 { font-size: 1.1em; color: var(--teal); font-weight: 600; }
-    .reveal h4 { font-size: 0.85em; color: var(--muted); font-weight: 400; letter-spacing: 0.05em; text-transform: uppercase; }
-
-    .reveal p, .reveal li { color: var(--white); line-height: 1.5; }
-    .reveal strong { color: var(--blue2); }
-    .reveal em { color: var(--teal); font-style: normal; }
-
-    .reveal section { padding: 0 60px; }
-
-    /* Slide background */
-    .reveal .slides section {
-      background: transparent;
-    }
-
-    /* Code */
-    .reveal code {
-      font-family: 'Geist Mono', monospace;
-      background: rgba(74,126,255,.12);
-      color: var(--teal);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.85em;
-    }
-
-    .reveal pre {
-      background: #080e1a;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 24px;
-      box-shadow: 0 0 40px rgba(74,126,255,.12);
-      width: 100%;
-      margin: 0;
-    }
-
-    .reveal pre code {
-      background: transparent;
-      color: #9feed9;
-      padding: 0;
-      font-size: 0.72em;
-      line-height: 1.7;
-    }
-
-    /* Tables */
-    .reveal table {
-      border-collapse: collapse;
-      width: 100%;
-      font-size: 0.7em;
-    }
-    .reveal table th {
-      background: rgba(74,126,255,.15);
-      color: var(--blue2);
-      padding: 10px 16px;
-      border: 1px solid var(--border);
-      text-align: left;
-      font-weight: 600;
-    }
-    .reveal table td {
-      padding: 9px 16px;
-      border: 1px solid var(--border);
-      color: var(--white);
-    }
-    .reveal table tr:nth-child(even) td {
-      background: rgba(255,255,255,.03);
-    }
-
-    /* Stat cards */
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin: 20px 0;
-    }
-    .stat-card {
-      background: rgba(74,126,255,.08);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 16px;
-      text-align: center;
-    }
-    .stat-num {
-      font-size: 2em;
-      font-weight: 700;
-      color: var(--blue2);
-      line-height: 1;
-      display: block;
-    }
-    .stat-label {
-      font-size: 0.55em;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      display: block;
-      margin-top: 6px;
-    }
-
-    /* Two-col */
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      align-items: start;
-    }
-
-    /* Card */
-    .card {
-      background: rgba(255,255,255,.04);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 24px;
-    }
-
-    /* Chip */
-    .chip {
-      display: inline-block;
-      background: rgba(74,126,255,.15);
-      border: 1px solid rgba(74,126,255,.3);
-      color: var(--blue2);
-      border-radius: 100px;
-      font-size: 0.5em;
-      padding: 3px 12px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      vertical-align: middle;
-      margin-left: 8px;
-    }
-
-    /* Big number hero */
-    .hero-num {
-      font-size: 4em;
-      font-weight: 900;
-      background: linear-gradient(135deg, var(--blue), var(--blue2), var(--teal));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1;
-      display: block;
-    }
-
-    /* Role rows */
-    .role-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 16px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.6em;
-    }
-    .role-row:last-child { border-bottom: none; }
-    .role-tag {
-      flex-shrink: 0;
-      width: 80px;
-      font-weight: 700;
-      color: var(--blue2);
-    }
-    .role-q { color: var(--muted); margin-bottom: 2px; }
-    .role-a { color: var(--white); }
-
-    /* Error bar */
-    .err-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin: 10px 0;
-      font-size: 0.58em;
-    }
-    .err-label { width: 180px; flex-shrink: 0; color: var(--white); }
-    .err-bar-bg { flex: 1; height: 8px; background: rgba(255,255,255,.08); border-radius: 4px; overflow: hidden; }
-    .err-bar { height: 100%; border-radius: 4px; }
-    .err-pct { width: 36px; text-align: right; color: var(--muted); }
-
-    /* Footer */
-    .reveal .slide-number { color: var(--muted); }
-
-    /* Tag line */
-    .tagline {
-      font-size: 0.55em;
-      color: var(--muted);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    /* Logos */
-    .logo-strip {
-      font-size: 0.45em;
-      color: var(--muted);
-      line-height: 2;
-    }
-
-    /* npm pill */
-    .npm-pill {
-      display: inline-block;
-      background: #080e1a;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 22px;
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.7em;
-      color: var(--teal);
-      margin: 12px 0;
-    }
-
-    /* Warning tag */
-    .warn {
-      display: inline-block;
-      background: rgba(255,190,60,.1);
-      border: 1px solid rgba(255,190,60,.3);
-      color: #ffc94a;
-      border-radius: 6px;
-      font-size: 0.55em;
-      padding: 2px 10px;
-    }
-    .positive {
-      display: inline-block;
-      background: rgba(100,220,140,.1);
-      border: 1px solid rgba(100,220,140,.3);
-      color: #64dc8c;
-      border-radius: 6px;
-      font-size: 0.55em;
-      padding: 2px 10px;
-    }
-
-    /* Glow line */
-    .glow-line {
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--blue), var(--teal), transparent);
-      margin: 20px 0;
-      border: none;
-    }
-
-    /* URL */
-    .url {
-      font-family: 'Geist Mono', monospace;
-      color: var(--teal);
-      font-size: 0.7em;
-    }
+    .big { font-size: 5em; font-weight: 900; background: linear-gradient(135deg, #AC9EF5, #7dd3fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; display: block; }
+    .mono { font-family: 'JetBrains Mono', monospace; background: #1a1d20; color: #7dd3fc; padding: 14px 24px; border-radius: 8px; display: inline-block; font-size: 0.65em; margin: 12px 0; border: 1px solid #2d3748; }
+    .tag  { display: inline-block; background: #1f1d35; border: 1px solid #3d3870; color: #AC9EF5; border-radius: 100px; font-size: 0.45em; padding: 4px 14px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; vertical-align: middle; }
+    .row  { display: flex; gap: 32px; align-items: flex-start; margin: 8px 0; }
+    .role { flex-shrink: 0; width: 70px; font-weight: 700; font-size: 0.6em; color: #AC9EF5; padding-top: 2px; }
+    .q    { font-size: 0.55em; color: #6b7280; }
+    .a    { font-size: 0.58em; color: #e8eaed; margin-top: 2px; }
+    .sep  { border: none; height: 1px; background: #1f2937; margin: 20px 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin: 28px 0; }
+    .box  { background: #18191b; border: 1px solid #2d3748; border-radius: 12px; padding: 24px 20px; text-align: center; }
+    .num  { font-size: 2.2em; font-weight: 800; color: #fff; display: block; line-height: 1; }
+    .lbl  { font-size: 0.45em; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-top: 6px; }
+    .qr   { border-radius: 10px; border: 1px solid #2d3748; }
+    .url  { font-family: 'JetBrains Mono', monospace; color: #7dd3fc; font-size: 0.65em; }
+    .muted { color: #6b7280 !important; }
   </style>
 </head>
 <body>
@@ -285,290 +44,138 @@
 
     <!-- 1. TITLE -->
     <section>
-      <p class="tagline">ClawCon Ankara 2 · 2026</p>
-      <h1>context-mode</h1>
+      <h3>ClawCon Ankara 2 · 2026</h3>
+      <h1 style="margin:16px 0 12px">context-mode</h1>
       <h2>The other half of the context problem</h2>
-      <hr class="glow-line" />
-      <p style="font-size:0.55em; color:var(--muted)">
-        open-source plugin &nbsp;·&nbsp; commercial platform &nbsp;·&nbsp; 331,200+ developers
-      </p>
+      <hr class="sep" style="margin-top:32px"/>
+      <p>open-source plugin &nbsp;·&nbsp; commercial platform &nbsp;·&nbsp; 331,200+ developers</p>
     </section>
 
     <!-- 2. PROBLEM -->
     <section>
-      <h4>The Problem</h4>
-      <h2>Your AI is burning context on data it already read.</h2>
-      <div class="card" style="margin-top:28px">
-        <p style="font-size:0.65em; color:var(--muted); margin:0 0 8px">Every turn your agent runs a command:</p>
-        <p style="font-size:0.7em; margin:6px 0">gh issue list &nbsp;→&nbsp; file read &nbsp;→&nbsp; grep &nbsp;→&nbsp; git log</p>
-        <p style="font-size:0.65em; color:var(--muted); margin:8px 0 0">That output lands in the conversation and gets <strong>re-sent every single turn.</strong></p>
-      </div>
-      <div style="text-align:center; margin-top:32px">
-        <span class="hero-num">750,000</span>
-        <p style="font-size:0.5em; color:var(--muted); margin-top:8px">input tokens · 50 turns · one command</p>
-      </div>
+      <h3>The Problem</h3>
+      <h1>Your AI is re-reading the same data every turn.</h1>
+      <hr class="sep"/>
+      <p>Every grep, file read, git log — lands in the conversation and gets re-sent every single turn. 50 turns in, one command costs:</p>
+      <span class="big">750,000</span>
+      <p>input tokens &nbsp;·&nbsp; from a single command</p>
     </section>
 
     <!-- 3. PLUGIN -->
     <section>
-      <h4>The Solution</h4>
-      <h2>context-mode intercepts before it hits context.</h2>
-      <p style="font-size:0.62em; color:var(--muted); margin:16px 0 24px">
-        Raw data goes into a local FTS5 store. The agent searches it when it needs to.<br/>
-        Same answers. Same work.
-      </p>
-      <div class="stats" style="grid-template-columns: repeat(3,1fr)">
-        <div class="stat-card">
-          <span class="stat-num">30×</span>
-          <span class="stat-label">fewer tokens</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num">17</span>
-          <span class="stat-label">adapters</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num">331k+</span>
-          <span class="stat-label">developers</span>
-        </div>
-      </div>
-      <div class="npm-pill">npm install -g context-mode</div>
-      <p style="font-size:0.5em; color:var(--muted)">
-        Claude Code · Cursor · Copilot · Codex · Gemini CLI · Kiro · and 11 more &nbsp;·&nbsp; Open source · ELv2
-      </p>
-    </section>
-
-    <!-- 4. INSIGHT INTRO -->
-    <section>
-      <h4>The Platform</h4>
-      <h2>context-mode Insight</h2>
-      <p style="font-size:0.65em; color:var(--muted); margin:16px 0 28px">
-        Your engineers already run context-mode. Insight is the <strong>opt-in org layer</strong> on top —<br/>
-        flip a switch and see what your team is doing with the AI tools they already use.
-      </p>
-      <div class="stats">
-        <div class="stat-card">
-          <span class="stat-num">222</span>
-          <span class="stat-label">patterns</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num">13</span>
-          <span class="stat-label">MCP tools</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num">14</span>
-          <span class="stat-label">AI adapters</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num">7</span>
-          <span class="stat-label">personas</span>
-        </div>
-      </div>
-      <p style="font-size:0.6em; margin-top:24px">
-        <strong>$20 / seat / month</strong> &nbsp;·&nbsp; <span class="url">platform.context-mode.com</span>
-      </p>
-    </section>
-
-    <!-- 5. 7 PERSONAS -->
-    <section>
-      <h4>One endpoint · Seven roles</h4>
-      <h2>Same data. Six different conversations.</h2>
-      <div style="margin-top:20px">
-        <div class="role-row">
-          <span class="role-tag">CTO</span>
-          <div>
-            <div class="role-q">"What is our AI investment returning this quarter?"</div>
-            <div class="role-a">→ 33.3% productive rate across 17 engineers. 9 of 27 sessions produced committed code.</div>
-          </div>
-        </div>
-        <div class="role-row">
-          <span class="role-tag">EM</span>
-          <div>
-            <div class="role-q">"Who's stuck on my teams this week?"</div>
-            <div class="role-a">→ 7 engineers inactive. Top error: stale file references — 50% of failures. One CLAUDE.md fix.</div>
-          </div>
-        </div>
-        <div class="role-row">
-          <span class="role-tag">IC</span>
-          <div>
-            <div class="role-q">"How am I doing this week?"</div>
-            <div class="role-a">→ 37m avg session · 36 files surfaced · 20 searches. Productive rate improving.</div>
-          </div>
-        </div>
-        <div class="role-row">
-          <span class="role-tag">FinOps</span>
-          <div>
-            <div class="role-q">"Where is our AI spend going?"</div>
-            <div class="role-a">→ $1.96 this week · 0.9 commits per engineer. Each AI commit saves 30–60 min.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 6. DASHBOARD ORG VIEW -->
-    <section>
-      <h4>Live · platform.context-mode.com · 7d</h4>
-      <h2>Dashboard: The Org View</h2>
-      <div class="stats" style="margin:20px 0; grid-template-columns: repeat(4,1fr)">
-        <div class="stat-card">
-          <span class="stat-num">27</span>
-          <span class="stat-label">sessions</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num">97.7%</span>
-          <span class="stat-label">success rate</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num">10/17</span>
-          <span class="stat-label">active members</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-num">33.3%</span>
-          <span class="stat-label">productive rate</span>
-        </div>
-      </div>
-      <div class="card">
-        <p style="font-size:0.55em; color:var(--teal); font-weight:600; margin:0 0 12px">⚠ Failure Analysis</p>
-        <div class="err-row">
-          <span class="err-label">Stale file references</span>
-          <div class="err-bar-bg"><div class="err-bar" style="width:50%;background:#e05555"></div></div>
-          <span class="err-pct">50%</span>
-        </div>
-        <div class="err-row">
-          <span class="err-label">Test failure</span>
-          <div class="err-bar-bg"><div class="err-bar" style="width:25%;background:#e09000"></div></div>
-          <span class="err-pct">25%</span>
-        </div>
-        <div class="err-row">
-          <span class="err-label">Git conflict</span>
-          <div class="err-bar-bg"><div class="err-bar" style="width:25%;background:#e09000"></div></div>
-          <span class="err-pct">25%</span>
-        </div>
-        <p style="font-size:0.5em; color:var(--muted); margin:8px 0 0">Fix: add Read-before-Edit to your shared CLAUDE.md → eliminates 50% of all failures</p>
-      </div>
-    </section>
-
-    <!-- 7. SESSION HEALTH + TEAMS -->
-    <section>
-      <div class="two-col">
-        <div>
-          <h4>Session Health</h4>
-          <div class="card" style="margin-top:12px">
-            <div style="font-size:0.58em">
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Avg session length</span><strong>37m</strong></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Files surfaced / session</span><strong>36</strong></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted)">Searches / session</span><strong>20</strong></div>
-              <div style="display:flex;justify-content:space-between;padding:8px 0"><span style="color:var(--muted)">Auto-compacts / session</span><strong>0.7</strong></div>
-            </div>
-            <p style="font-size:0.48em;color:#ffc94a;margin:10px 0 0">⚠ 70% of sessions hit auto-compact → 2h/week recoverable</p>
-          </div>
-        </div>
-        <div>
-          <h4>Team Comparison</h4>
-          <table style="margin-top:12px;font-size:0.55em">
-            <tr><th>Team</th><th>Members</th><th>Active</th><th>Sessions</th></tr>
-            <tr><td>Mobile</td><td>4</td><td>2</td><td>8</td></tr>
-            <tr><td>Backend</td><td>4</td><td>2</td><td>8</td></tr>
-            <tr><td>Frontend</td><td>4</td><td>2</td><td>5</td></tr>
-            <tr><td>Platform</td><td>4</td><td>2</td><td>4</td></tr>
-          </table>
-          <p style="font-size:0.48em;color:var(--muted);margin-top:12px">This is what an EM opens before 1:1s.<br/>No report. No spreadsheet. Already there.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 8. TERMINAL DEMO -->
-    <section>
-      <h4>13 MCP Tools · Terminal Demo</h4>
-      <h2>Query your team from Claude Code.</h2>
-      <pre><code>
-> how is my team doing this week?
-
-  Productive rate: 33.3%
-  9 of 27 sessions produced committed code.
-  0.9 commits per engineer this week.
-  174 AI tool calls — avg 12.5 per session.
-
-> find blockers across the team this week
-
-  7 engineers inactive — check token / config.
-  Top error: stale file references (50% of failures).
-  Fix: add Read-before-Edit to shared CLAUDE.md.
-
-> what changed this week?
-
-  Productive rate up 368% week-over-week.
-  Team: 10% → 33.3% commit rate.
-  Error rate trending down — mastery improving.
-      </code></pre>
-    </section>
-
-    <!-- 9. BIG RESULT -->
-    <section>
-      <span class="positive">POSITIVE · this week</span>
-      <div style="margin:24px 0">
-        <span class="hero-num">368%</span>
-        <p style="font-size:0.7em; color:var(--blue2); margin:8px 0 0">Productive rate improved this week</p>
-      </div>
-      <p style="font-size:0.65em; color:var(--muted)">
-        Team went from 10% → 33.3% commit rate.<br/>
-        <strong>Same team. Same tools.</strong> They just started measuring.
-      </p>
-      <hr class="glow-line" style="margin:28px 0" />
-      <div style="display:flex; align-items:center; justify-content:center; gap:40px">
-        <div style="text-align:center">
-          <span style="font-size:1.6em; font-weight:700; color:var(--blue2)">$20</span>
-          <p style="font-size:0.45em; color:var(--muted); margin:4px 0 0">per seat / month</p>
-        </div>
-        <div style="text-align:center">
-          <span style="font-size:1.6em; font-weight:700; color:var(--teal)">self-serve</span>
-          <p style="font-size:0.45em; color:var(--muted); margin:4px 0 0">no deployment needed</p>
-        </div>
-        <div style="text-align:center">
-          <span style="font-size:1.6em; font-weight:700; color:var(--lavender)">instant</span>
-          <p style="font-size:0.45em; color:var(--muted); margin:4px 0 0">data starts flowing</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 10. CTA -->
-    <section>
-      <h4>Get started</h4>
+      <h3>The Fix</h3>
       <h1>context-mode</h1>
-      <hr class="glow-line" />
-      <div style="display:flex; align-items:center; gap:48px; justify-content:center; margin:20px 0">
-        <div style="flex:1; font-size:0.62em; line-height:2.4">
-          <div><span style="color:var(--muted)">Plugin (open source) →</span> &nbsp;<span class="url">context-mode.com</span></div>
-          <div style="font-size:0.85em; color:var(--muted); margin-left:0"><code>npm install -g context-mode</code></div>
-          <div style="margin-top:8px"><span style="color:var(--muted)">Platform →</span> &nbsp;<span class="url">context-mode.com/insight</span> &nbsp;·&nbsp; $20/seat/month</div>
-          <div><span style="color:var(--muted)">Live →</span> &nbsp;<span class="url">platform.context-mode.com</span></div>
+      <p>An MCP plugin that intercepts large tool output <strong>before</strong> it hits the context window. Raw data goes into a local store. The agent searches it when it needs to.</p>
+      <div class="mono">npm install -g context-mode</div>
+      <div class="grid">
+        <div class="box"><span class="num">30×</span><span class="lbl">fewer tokens</span></div>
+        <div class="box"><span class="num">17</span><span class="lbl">AI adapters</span></div>
+        <div class="box"><span class="num">331k+</span><span class="lbl">developers</span></div>
+      </div>
+    </section>
+
+    <!-- 4. INSIGHT -->
+    <section>
+      <h3>The Platform</h3>
+      <h1>context-mode Insight</h1>
+      <h2>Do you know how well your team uses AI?</h2>
+      <hr class="sep"/>
+      <p>Productive rate per engineer. Blockers per team. Cost per commit.<br/>Role-narrowed for CTO · EM · IC · FinOps · DevOps · CISO</p>
+      <div class="grid" style="margin-top:28px">
+        <div class="box"><span class="num">222</span><span class="lbl">patterns</span></div>
+        <div class="box"><span class="num">13</span><span class="lbl">MCP tools</span></div>
+        <div class="box"><span class="num">$20</span><span class="lbl">seat / month</span></div>
+      </div>
+    </section>
+
+    <!-- 5. PERSONAS -->
+    <section>
+      <h3>One endpoint · Seven roles</h3>
+      <h2>Same data — different conversation for each role.</h2>
+      <hr class="sep"/>
+      <div class="row"><span class="role">CTO</span><div><div class="q">"What is our AI investment returning?"</div><div class="a">→ 33.3% productive rate · 9 of 27 sessions produced commits · 10 of 17 engineers active</div></div></div>
+      <div class="row" style="margin-top:14px"><span class="role">EM</span><div><div class="q">"Who's stuck on my teams this week?"</div><div class="a">→ 7 engineers inactive · stale file references = 50% of failures · one CLAUDE.md fix</div></div></div>
+      <div class="row" style="margin-top:14px"><span class="role">IC</span><div><div class="q">"How am I doing this week?"</div><div class="a">→ 37m avg session · 36 files surfaced · 20 searches · productive rate improving</div></div></div>
+      <div class="row" style="margin-top:14px"><span class="role">FinOps</span><div><div class="q">"Where is our AI spend going?"</div><div class="a">→ $1.96 this week · 0.9 commits/engineer · each AI commit saves 30–60 min</div></div></div>
+    </section>
+
+    <!-- 6. DASHBOARD -->
+    <section>
+      <h3>Live · platform.context-mode.com · 7d</h3>
+      <h1>What the dashboard shows.</h1>
+      <hr class="sep"/>
+      <div class="grid" style="grid-template-columns:1fr 1fr 1fr 1fr">
+        <div class="box"><span class="num">27</span><span class="lbl">sessions</span></div>
+        <div class="box"><span class="num">97.7%</span><span class="lbl">success rate</span></div>
+        <div class="box"><span class="num">10/17</span><span class="lbl">active members</span></div>
+        <div class="box"><span class="num">33%</span><span class="lbl">productive rate</span></div>
+      </div>
+      <p style="text-align:left">Top failure: <strong>stale file references → 50% of all errors.</strong><br/>
+      The platform names the root cause and tells you the exact fix — not just the error rate.</p>
+    </section>
+
+    <!-- 7. TERMINAL -->
+    <section>
+      <h3>13 MCP Tools</h3>
+      <h2>Ask your team's AI health in plain English.</h2>
+      <hr class="sep"/>
+      <div style="background:#0d1117;border:1px solid #2d3748;border-radius:12px;padding:28px 32px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:0.58em;line-height:1.9;color:#9ca3af">
+        <span style="color:#6b7280">&gt;</span> <span style="color:#e8eaed">find blockers across the team this week</span><br/>
+        <span style="color:#7dd3fc">7 engineers inactive · stale file references (50% of failures)</span><br/>
+        <span style="color:#7dd3fc">Fix: one rule in shared CLAUDE.md</span><br/><br/>
+        <span style="color:#6b7280">&gt;</span> <span style="color:#e8eaed">what changed this week?</span><br/>
+        <span style="color:#7dd3fc">Productive rate up 368% week-over-week</span><br/>
+        <span style="color:#7dd3fc">Team: 10% → 33% commit rate</span>
+      </div>
+    </section>
+
+    <!-- 8. BIG WIN -->
+    <section>
+      <h3>Result</h3>
+      <span class="big">368%</span>
+      <h2>Productive rate improved in one week.</h2>
+      <hr class="sep"/>
+      <p>Same team. Same tools.<br/><strong>They just started measuring.</strong></p>
+    </section>
+
+    <!-- 9. PRICING -->
+    <section>
+      <h3>Get started</h3>
+      <h1 style="font-size:3.5em">$20 <span style="font-size:0.45em;color:#6b7280;font-weight:400">/ seat / month</span></h1>
+      <hr class="sep"/>
+      <p><strong>No deployment. No workflow changes.</strong><br/>Your engineers already have the plugin. Just invite them to the platform.</p>
+      <div class="mono" style="margin-top:20px">platform.context-mode.com</div>
+      <p style="margin-top:16px;font-size:0.5em">Used by engineers at Microsoft · Google · Meta · Stripe · Datadog · Anthropic · Vercel · Cursor</p>
+    </section>
+
+    <!-- 10. CTA + QR -->
+    <section>
+      <h3>Links</h3>
+      <div style="display:flex;align-items:center;gap:60px;justify-content:center;margin-top:20px">
+        <div style="text-align:left;line-height:2.4">
+          <div><span class="muted" style="font-size:0.55em">Plugin →</span> <span class="url">context-mode.com</span></div>
+          <div><span class="muted" style="font-size:0.55em">Platform →</span> <span class="url">context-mode.com/insight</span></div>
+          <div><span class="muted" style="font-size:0.55em">Dashboard →</span> <span class="url">platform.context-mode.com</span></div>
+          <div><span class="muted" style="font-size:0.55em">Speaker →</span> <span class="url">linktr.ee/murataslan</span></div>
         </div>
-        <div style="flex-shrink:0; text-align:center">
-          <img
-            src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&color=7bb3ff&bgcolor=101928&data=https://linktr.ee/murataslan"
-            alt="linktr.ee/murataslan"
-            style="border-radius:12px; display:block; margin:0 auto"
-            width="160" height="160"
-          />
-          <p style="font-size:0.42em; color:var(--muted); margin-top:8px">linktr.ee/murataslan</p>
+        <div style="text-align:center;flex-shrink:0">
+          <img class="qr"
+            src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&color=AC9EF5&bgcolor=111213&data=https://linktr.ee/murataslan"
+            width="180" height="180" alt="linktr.ee/murataslan" />
+          <p style="font-size:0.42em;margin-top:8px;color:#6b7280">linktr.ee/murataslan</p>
         </div>
       </div>
-      <hr class="glow-line" />
-      <p class="logo-strip">
-        Microsoft · Google · Meta · Stripe · Datadog · GitHub · IBM · NVIDIA · Supabase · Amazon · Anthropic · Vercel · Cursor
-      </p>
     </section>
 
   </div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
 <script>
   Reveal.initialize({
     hash: true,
-    slideNumber: 'c/t',
     transition: 'fade',
     transitionSpeed: 'fast',
-    backgroundTransition: 'fade',
+    slideNumber: 'c/t',
     controls: true,
     progress: true,
     center: true,
