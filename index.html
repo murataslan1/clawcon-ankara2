@@ -1,496 +1,773 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>context-mode — ClawCon Ankara 2</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#0D0D0D}
-body{
-  background-color:#0D0D0D;
-  background-image:radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);
-  background-size:36px 36px;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Other Half of the Context Problem — ClawCon Ankara 2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cm-bg': '#FAFAF8',
+                        'cm-text': '#1a1a1a',
+                        'cm-muted': '#777',
+                        'cm-light': '#bbb',
+                        'cm-rust': '#B45309',
+                        'cm-blue': '#4A7FD4',
+                        'cm-border': '#E5E5E5',
+                        'cm-red': '#DC2626',
+                        'cm-green': '#16A34A',
+                    },
+                    fontFamily: {
+                        'serif': ['Instrument Serif', 'Georgia', 'serif'],
+                        'sans': ['IBM Plex Sans', '-apple-system', 'sans-serif'],
+                        'mono': ['IBM Plex Mono', 'SF Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'IBM Plex Sans', -apple-system, sans-serif; background: #FAFAF8; color: #1a1a1a; }
 
-/* ── SCALE WRAPPER ── */
-#scaler{
-  position:fixed;inset:0;
-  overflow:hidden;
-}
-.deck{
-  width:1920px;height:1080px;
-  position:absolute;
-  top:0;left:0;
-  transform-origin:0 0;
-}
+        .slide { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; overflow-y: auto; padding: 3rem 4rem; background: #FAFAF8; }
+        .slide.active { display: flex; }
 
-/* ── SLIDES ── */
-.slide{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;justify-content:center;
-  padding:0 160px;
-  opacity:0;pointer-events:none;
-  transition:opacity .35s ease;
-}
-.slide.active{opacity:1;pointer-events:all}
-.slide.active .anim{animation:fadeUp .5s ease both}
-.slide.active .anim2{animation:fadeUp .5s .12s ease both}
-.slide.active .anim3{animation:fadeUp .5s .22s ease both}
-.slide.active .anim4{animation:fadeUp .5s .32s ease both}
-@keyframes fadeUp{
-  from{opacity:0;transform:translateY(18px)}
-  to{opacity:1;transform:translateY(0)}
-}
+        .progress-bar { transition: width 0.3s ease; }
 
-/* ── TYPE ── */
-.label{
-  font-family:'Space Mono',monospace;
-  font-size:19px;letter-spacing:.15em;text-transform:uppercase;
-  color:rgba(255,255,255,.25);
-  margin-bottom:28px;
-}
-h1{
-  font-family:'Outfit',sans-serif;font-weight:900;
-  font-size:80px;line-height:1.02;letter-spacing:-.035em;
-  color:#fff;
-}
-h1 em{font-style:normal;color:#C4B5FD}
-.sub{
-  font-family:'Outfit',sans-serif;font-weight:300;
-  font-size:32px;line-height:1.55;
-  color:rgba(255,255,255,.45);
-  max-width:960px;
-  margin-top:20px;
-}
-.sub b{color:rgba(255,255,255,.85);font-weight:600}
-.mono{font-family:'Space Mono',monospace}
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in > * { opacity: 0; animation: fadeInUp 0.6s ease forwards; }
+        .animate-in > *:nth-child(1) { animation-delay: 0.1s; }
+        .animate-in > *:nth-child(2) { animation-delay: 0.25s; }
+        .animate-in > *:nth-child(3) { animation-delay: 0.4s; }
+        .animate-in > *:nth-child(4) { animation-delay: 0.55s; }
+        .animate-in > *:nth-child(5) { animation-delay: 0.7s; }
+        .animate-in > *:nth-child(6) { animation-delay: 0.85s; }
 
-/* ── DIVIDER ── */
-.hr{width:56px;height:3px;background:linear-gradient(90deg,#C4B5FD,#67E8F9);border-radius:2px;margin:32px 0}
+        .stat-rust {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-style: italic;
+            color: #B45309;
+        }
 
-/* ── STATS ── */
-.stats{display:flex;gap:22px;margin-top:48px}
-.s{
-  flex:1;border:1px solid rgba(255,255,255,.07);
-  border-radius:14px;padding:30px 26px;
-  background:rgba(255,255,255,.025);
-}
-.s-n{
-  font-family:'Space Mono',monospace;font-weight:700;
-  font-size:56px;color:#C4B5FD;
-  display:block;line-height:1;
-}
-.s-l{
-  font-family:'Outfit',sans-serif;font-size:17px;
-  color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.09em;
-  display:block;margin-top:10px;
-}
+        .section-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #999;
+        }
 
-/* ── BIG NUMBER (animated) ── */
-.hero-wrap{margin:24px 0 8px}
-.hero{
-  font-family:'Space Mono',monospace;font-weight:700;
-  font-size:180px;line-height:1;
-  background:linear-gradient(135deg,#C4B5FD 30%,#67E8F9);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-  display:inline-block;
-}
+        .event-cover {
+            width: 100%; max-width: 360px;
+            border-radius: 0.75rem;
+            border: 1px solid #E5E5E5;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+        }
 
-/* ── NPM PILL ── */
-.npm{
-  display:inline-block;
-  background:#050505;border:1px solid rgba(255,255,255,.1);
-  border-radius:10px;padding:16px 28px;
-  font-family:'Space Mono',monospace;font-size:26px;
-  color:#67E8F9;margin:28px 0 0;letter-spacing:.02em;
-}
+        /* Token pile animation */
+        @keyframes growBar {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        .bar-animate { animation: growBar 2s ease-out forwards; }
 
-/* ── TERMINAL ── */
-.term{
-  background:#060810;
-  border:1px solid rgba(255,255,255,.07);
-  border-radius:16px;padding:44px 52px;
-  font-family:'Space Mono',monospace;
-  font-size:24px;line-height:2;
-  max-width:1200px;margin-top:36px;
-}
-.t-cmd{color:#fff}
-.t-out{color:#67E8F9}
-.t-dim{color:rgba(255,255,255,.25)}
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
 
-/* ── ROLES ── */
-.roles{margin-top:32px;max-width:1200px}
-.rr{display:flex;gap:44px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.055)}
-.rr:last-child{border:none}
-.rt{font-family:'Space Mono',monospace;font-size:19px;color:#C4B5FD;font-weight:700;flex-shrink:0;width:96px;padding-top:3px}
-.rq{font-size:22px;color:rgba(255,255,255,.3);margin-bottom:5px}
-.ra{font-size:23px;color:rgba(255,255,255,.78)}
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0.15; }
+        }
+        .fade-away { animation: fadeOut 2.5s ease forwards; animation-delay: 0.5s; }
 
-/* ── TWO COL ── */
-.tc{display:flex;gap:80px;align-items:flex-start;margin-top:36px}
-.tc-col{flex:1}
-.tc-label{font-family:'Space Mono',monospace;font-size:16px;color:rgba(255,255,255,.2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .slide-in-1 { animation: slideIn 0.5s ease forwards; animation-delay: 0.3s; opacity: 0; }
+        .slide-in-2 { animation: slideIn 0.5s ease forwards; animation-delay: 0.6s; opacity: 0; }
+        .slide-in-3 { animation: slideIn 0.5s ease forwards; animation-delay: 0.9s; opacity: 0; }
+        .slide-in-4 { animation: slideIn 0.5s ease forwards; animation-delay: 1.2s; opacity: 0; }
+        .slide-in-5 { animation: slideIn 0.5s ease forwards; animation-delay: 1.5s; opacity: 0; }
 
-/* ── STAT TABLE ── */
-.mrow{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:22px}
-.mk{color:rgba(255,255,255,.38)}
-.mv{color:#fff;font-weight:600}
+        @keyframes fillContext {
+            0% { width: 5%; background: #16A34A; }
+            30% { width: 40%; background: #CA8A04; }
+            60% { width: 75%; background: #EA580C; }
+            85% { width: 95%; background: #DC2626; }
+            100% { width: 100%; background: #DC2626; }
+        }
+        .context-fill { animation: fillContext 3s ease-out forwards; animation-delay: 0.5s; }
 
-/* ── BAR CHART ── */
-.bars{margin-top:4px}
-.brow{display:flex;align-items:center;gap:18px;margin-bottom:20px}
-.bl{font-size:21px;color:rgba(255,255,255,.45);width:240px;flex-shrink:0}
-.bt{flex:1;height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
-.bf{height:100%;border-radius:5px;width:0;transition:width 1s .3s ease}
-.bp{font-family:'Space Mono',monospace;font-size:18px;color:rgba(255,255,255,.35);width:46px;text-align:right}
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .pulse { animation: pulse 2s ease-in-out infinite; }
 
-/* ── QR ── */
-.qr-wrap{display:flex;align-items:center;gap:80px;margin-top:44px}
-.qr-links{font-size:26px;line-height:2.5;color:rgba(255,255,255,.32)}
-.qr-links span{font-family:'Space Mono',monospace;font-size:22px;color:#67E8F9}
-.qr-img{border-radius:14px;border:1px solid rgba(255,255,255,.07)}
-
-/* ── FOOTER LINKS ── */
-#links{
-  position:fixed;bottom:26px;left:44px;z-index:200;
-  display:flex;align-items:center;gap:10px;
-}
-#links a{
-  font-family:'Space Mono',monospace;font-size:13px;
-  color:rgba(255,255,255,.2);text-decoration:none;
-  padding:5px 14px;border-radius:6px;
-  border:1px solid rgba(255,255,255,.06);
-  background:rgba(0,0,0,.5);
-  transition:color .2s,border-color .2s,background .2s;
-  backdrop-filter:blur(4px);
-}
-#links a:hover{
-  color:#C4B5FD;
-  border-color:rgba(196,181,253,.35);
-  background:rgba(196,181,253,.07);
-}
-#links .sep{
-  color:rgba(255,255,255,.08);
-  font-family:'Space Mono',monospace;font-size:12px;
-}
-
-/* ── NAV ── */
-#nav{
-  position:fixed;bottom:32px;right:44px;z-index:100;
-  display:flex;align-items:center;gap:14px;
-  font-family:'Space Mono',monospace;font-size:14px;
-  color:rgba(255,255,255,.18);
-}
-.nb{
-  width:34px;height:34px;border-radius:8px;
-  border:1px solid rgba(255,255,255,.09);
-  background:rgba(255,255,255,.03);
-  color:rgba(255,255,255,.28);font-size:15px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:all .2s;user-select:none;
-}
-.nb:hover{border-color:rgba(196,181,253,.4);color:#C4B5FD;background:rgba(196,181,253,.06)}
-
-/* ── PROGRESS ── */
-#prog{
-  position:fixed;bottom:0;left:0;right:0;height:2px;
-  background:rgba(255,255,255,.05);z-index:100;
-}
-#prog-fill{
-  height:100%;
-  background:linear-gradient(90deg,#C4B5FD,#67E8F9);
-  transition:width .3s ease;
-}
-</style>
+        /* Speaker Notes */
+        .speaker-notes { display: none; position: fixed; bottom: 0; left: 0; right: 0; max-height: 30vh; overflow-y: auto; background: rgba(26,26,26,0.97); border-top: 2px solid #B45309; padding: 1.25rem 2rem; z-index: 100; }
+        .speaker-notes.visible { display: block; }
+        .speaker-notes p { color: rgba(255,255,255,0.85); font-size: 1rem; line-height: 1.7; max-width: 64rem; margin: 0 auto; }
+        .speaker-notes .notes-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.15em; color: #B45309; margin-bottom: 0.5rem; }
+        .speaker-notes .pause { color: rgba(180,83,9,0.4); font-style: italic; }
+    </style>
 </head>
-<body>
+<body class="overflow-hidden h-screen">
 
-<div id="scaler">
-<div class="deck" id="deck">
-
-  <!-- 1 · TITLE ─────────────────────── -->
-  <div class="slide active" id="s0" style="flex-direction:row;align-items:center;gap:0;padding:0 120px">
-    <!-- left -->
-    <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
-      <div class="label anim">ClawCon Ankara 2 · 2026</div>
-      <h1 class="anim2" style="font-size:92px">context-mode</h1>
-      <div class="sub anim3">The other half of the context problem</div>
-      <div class="hr anim4"></div>
-      <p class="sub anim4" style="font-size:20px">open-source plugin &nbsp;·&nbsp; commercial platform &nbsp;·&nbsp; 331,200+ developers</p>
+    <!-- Progress Bar -->
+    <div class="fixed top-0 left-0 right-0 h-[3px] bg-cm-border z-50">
+        <div id="progressBar" class="progress-bar h-full bg-cm-rust" style="width: 9.1%"></div>
     </div>
-    <!-- right: speaker card -->
-    <div class="anim3" style="display:flex;flex-direction:column;align-items:center;gap:28px;padding-left:80px;border-left:1px solid rgba(255,255,255,.07);margin-left:80px">
-      <img src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=300,height=300/uploads/5y/702c25ca-c121-487c-9c43-c907d5f11050.png"
-        width="260" height="260"
-        style="border-radius:18px;border:1px solid rgba(255,255,255,.09);object-fit:cover"
-        alt="ClawCon Ankara 2"/>
-      <div style="text-align:center">
-        <p style="font-family:'Outfit',sans-serif;font-weight:700;font-size:30px;color:#fff;letter-spacing:-.01em">Murat Aslan</p>
-        <p style="font-family:'Space Mono',monospace;font-size:15px;color:rgba(255,255,255,.28);margin-top:8px;letter-spacing:.06em;text-transform:uppercase">OSS Contributor · AI Operator</p>
-      </div>
-    </div>
-  </div>
 
-  <!-- 2 · PROBLEM ────────────────────── -->
-  <div class="slide" id="s1">
-    <div class="label anim">The Problem</div>
-    <h1 class="anim2" style="font-size:68px">Your AI re-reads<br/>the same data every turn.</h1>
-    <p class="sub anim3" style="margin-top:24px">Every grep, every file read, every git log — gets re-sent every single turn.<br/>50 turns in, one command costs:</p>
-    <div class="hero-wrap anim4">
-      <span class="hero" id="counter1">0</span>
-      <p class="sub" style="margin-top:8px;font-size:22px">input tokens &nbsp;·&nbsp; from a single command</p>
+    <!-- Navigation -->
+    <div class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-md border border-cm-border">
+        <button onclick="prevSlide()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-cm-muted hover:text-cm-text"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <span id="slideCounter" class="font-mono text-xs text-cm-muted min-w-[3rem] text-center">1 / 11</span>
+        <button onclick="nextSlide()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-cm-muted hover:text-cm-text"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <span class="text-cm-border">|</span>
+        <button onclick="toggleNotes()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-cm-muted hover:text-cm-text font-mono text-[10px]" title="Press S">S</button>
     </div>
-  </div>
 
-  <!-- 3 · FIX ────────────────────────── -->
-  <div class="slide" id="s2">
-    <div class="label anim">The Fix</div>
-    <h1 class="anim2">context-mode</h1>
-    <p class="sub anim3">Intercepts large tool output <b>before</b> it hits the context window.<br/>Raw data → local store. Agent searches when it needs to.</p>
-    <div class="stats anim4">
-      <div class="s"><span class="s-n">30×</span><span class="s-l">fewer tokens</span></div>
-      <div class="s"><span class="s-n">17</span><span class="s-l">AI adapters</span></div>
-      <div class="s"><span class="s-n">331k+</span><span class="s-l">developers</span></div>
-      <div class="s" style="border-color:rgba(196,181,253,.18);background:rgba(196,181,253,.04)">
-        <span class="s-n mono" style="font-size:26px;padding-top:6px">npm i -g<br/>context-mode</span>
-        <span class="s-l">open source · ELv2</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- 4 · INSIGHT ─────────────────────── -->
-  <div class="slide" id="s3">
-    <div class="label anim">The Platform</div>
-    <h1 class="anim2">context-mode<br/><em>Insight</em></h1>
-    <p class="sub anim3" style="margin-top:16px">Your engineers already run context-mode.<br/>Insight is the org layer on top — flip a switch, see what your team is doing.</p>
-    <div class="stats anim4">
-      <div class="s"><span class="s-n">222</span><span class="s-l">patterns</span></div>
-      <div class="s"><span class="s-n">13</span><span class="s-l">MCP tools</span></div>
-      <div class="s"><span class="s-n">14</span><span class="s-l">adapters</span></div>
-      <div class="s" style="border-color:rgba(196,181,253,.18)"><span class="s-n" style="color:#67E8F9">$20</span><span class="s-l">seat / month</span></div>
-    </div>
-  </div>
-
-  <!-- 5 · PERSONAS ────────────────────── -->
-  <div class="slide" id="s4">
-    <div class="label anim">One endpoint · Seven roles</div>
-    <h1 class="anim2" style="font-size:62px">Same data.<br/>Different question.</h1>
-    <div class="roles anim3">
-      <div class="rr"><span class="rt">CTO</span><div><div class="rq">"What is our AI investment returning?"</div><div class="ra">→ 33.3% productive rate · 9 of 27 sessions produced commits · 10/17 engineers active</div></div></div>
-      <div class="rr"><span class="rt">EM</span><div><div class="rq">"Who's stuck on my teams this week?"</div><div class="ra">→ 7 engineers inactive · stale file errors = 50% of failures · one CLAUDE.md fix</div></div></div>
-      <div class="rr"><span class="rt">IC</span><div><div class="rq">"How am I doing this week?"</div><div class="ra">→ 37m avg session · 36 files surfaced · 20 searches · productive rate improving</div></div></div>
-      <div class="rr"><span class="rt">FinOps</span><div><div class="rq">"Where is our AI spend going?"</div><div class="ra">→ $1.96 this week · 0.9 commits/engineer · each AI commit saves ~45 min</div></div></div>
-    </div>
-  </div>
-
-  <!-- 6 · DASHBOARD ───────────────────── -->
-  <div class="slide" id="s5">
-    <div class="label anim">Live · clawcon.context-mode.com · 7d</div>
-    <h1 class="anim2" style="font-size:64px">What the dashboard shows.</h1>
-    <div class="tc anim3">
-      <div class="tc-col">
-        <div class="tc-label">This week</div>
-        <div class="mrow"><span class="mk">Sessions</span><span class="mv">27</span></div>
-        <div class="mrow"><span class="mk">Success rate</span><span class="mv">97.7%</span></div>
-        <div class="mrow"><span class="mk">Active members</span><span class="mv">10 / 17</span></div>
-        <div class="mrow"><span class="mk">Productive rate</span><span class="mv">33.3%</span></div>
-        <div class="mrow" style="border:none"><span class="mk">Avg session</span><span class="mv">37 min</span></div>
-      </div>
-      <div class="tc-col">
-        <div class="tc-label">Failure Analysis</div>
-        <div class="bars">
-          <div class="brow"><span class="bl">Stale file refs</span><div class="bt"><div class="bf" id="b1" style="background:#ef4444"></div></div><span class="bp">50%</span></div>
-          <div class="brow"><span class="bl">Test failure</span><div class="bt"><div class="bf" id="b2" style="background:#f97316"></div></div><span class="bp">25%</span></div>
-          <div class="brow"><span class="bl">Git conflict</span><div class="bt"><div class="bf" id="b3" style="background:#f97316"></div></div><span class="bp">25%</span></div>
+    <!-- ==================== SLIDE 1: TITLE ==================== -->
+    <div data-slide="0" class="slide active">
+        <div class="max-w-4xl mx-auto text-center animate-in">
+            <div class="mb-6">
+                <img src="https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,background=white,quality=75,width=300,height=300/uploads/5y/702c25ca-c121-487c-9c43-c907d5f11050.png" alt="ClawCon Ankara 2" class="event-cover mx-auto">
+            </div>
+            <div class="section-label mb-4">ClawCon Ankara 2 &middot; 2026</div>
+            <h1 class="font-serif text-6xl md:text-7xl lg:text-8xl mb-6 text-cm-text leading-tight">
+                The Other Half of the<br>Context Problem
+            </h1>
+            <div class="mb-3">
+                <span class="text-cm-text font-sans font-semibold text-lg">Murat Aslan</span>
+                <span class="text-cm-light mx-3">&middot;</span>
+                <span class="text-cm-muted font-sans text-lg">OSS Contributor · AI Operator</span>
+            </div>
+            <div class="text-cm-muted text-sm font-sans leading-relaxed mt-4">
+                Organized by <span class="text-cm-text/80 font-medium">BuilderMare</span> &mdash; Veli Uysal &amp; Furkan Demir
+                &middot; <span class="text-cm-text/80 font-medium">ClawCon</span> &amp; <span class="text-cm-text/80 font-medium">OpenClaw</span>
+                &middot; Special thanks to Murat Aslan
+            </div>
         </div>
-        <p class="sub" style="font-size:20px;margin-top:20px">Platform names the root cause + exact fix.<br/>Not just the error rate.</p>
-      </div>
+        <div class="speaker-notes" data-notes="0">
+            <div class="notes-label">Slide 1</div>
+            <p>Good evening everyone. Quick thank you to Veli and Furkan from BuilderMare, to Murat Aslan, and to ClawCon and the OpenClaw community for making this happen in Istanbul. <span class="pause">[pause]</span> I'm Mert. I build open-source tools for AI coding agents. Tonight I want to show you a problem that every single person in this room is living with. You just might not have a name for it yet.</p>
+        </div>
     </div>
-  </div>
 
-  <!-- 7 · TERMINAL ───────────────────── -->
-  <div class="slide" id="s6">
-    <div class="label anim">13 MCP Tools</div>
-    <h1 class="anim2" style="font-size:64px">Ask in plain English.</h1>
-    <div class="term anim3">
-      <div><span class="t-dim">&gt;</span> <span class="t-cmd">find blockers across the team this week</span></div>
-      <div><span class="t-out">&nbsp;&nbsp;7 engineers inactive — check token or config</span></div>
-      <div><span class="t-out">&nbsp;&nbsp;stale file references: 50% of all failures</span></div>
-      <div><span class="t-out">&nbsp;&nbsp;Fix: one rule in your shared CLAUDE.md</span></div>
-      <br/>
-      <div><span class="t-dim">&gt;</span> <span class="t-cmd">what changed this week?</span></div>
-      <div><span class="t-out">&nbsp;&nbsp;Productive rate up 368% week-over-week</span></div>
-      <div><span class="t-out">&nbsp;&nbsp;Team: 10% → 33% commit rate</span></div>
-      <div><span class="t-out">&nbsp;&nbsp;Error rate trending down — collective mastery improving</span></div>
+    <!-- ==================== SLIDE 2: THE HOOK ==================== -->
+    <div data-slide="1" class="slide">
+        <div class="max-w-4xl mx-auto text-center animate-in">
+            <div class="section-label mb-6">The Problem</div>
+            <h2 class="font-serif text-6xl md:text-7xl lg:text-8xl text-cm-text mb-8 leading-tight">
+                Your AI agent<br>has no memory.
+            </h2>
+            <p class="text-cm-muted font-sans text-2xl max-w-2xl mx-auto leading-relaxed">
+                Claude Code, Cursor, Copilot, Codex, Gemini CLI.<br>
+                Under the hood, they all work the same way.
+            </p>
+        </div>
+        <div class="speaker-notes" data-notes="1">
+            <div class="notes-label">Slide 2</div>
+            <p>Let's start with a fact that might surprise you. <span class="pause">[pause]</span> Your AI coding agent has no memory. None. Claude Code, Cursor, Copilot, Codex, Gemini CLI. Under the hood, they all work exactly the same way. The model is stateless. It doesn't remember anything from one turn to the next. So how does it seem like it remembers? Let me show you.</p>
+        </div>
     </div>
-  </div>
 
-  <!-- 8 · BIG WIN ─────────────────────── -->
-  <div class="slide" id="s7">
-    <div class="label anim">Result · This Week</div>
-    <div class="hero-wrap anim2">
-      <span class="hero" id="counter2">0</span><span class="hero" style="font-size:80px;background:none;-webkit-text-fill-color:rgba(255,255,255,.3)">%</span>
+    <!-- ==================== SLIDE 3: THE RE-SEND LOOP ==================== -->
+    <div data-slide="2" class="slide">
+        <div class="max-w-5xl mx-auto w-full animate-in">
+            <div class="section-label mb-4">How it actually works</div>
+            <h2 class="font-serif text-5xl md:text-6xl text-cm-text mb-10">Every turn, everything gets re-sent.</h2>
+
+            <div class="space-y-5">
+                <!-- Turn 1 -->
+                <div class="slide-in-1 flex items-center gap-4">
+                    <div class="w-20 shrink-0 text-right font-mono text-sm text-cm-muted">Turn 1</div>
+                    <div class="flex-1 bg-gray-100 rounded-lg h-10 overflow-hidden relative">
+                        <div class="absolute inset-y-0 left-0 bg-cm-rust/20 rounded-lg" style="width:8%"></div>
+                        <span class="absolute inset-0 flex items-center justify-center font-mono text-xs text-cm-muted">your prompt + 1 tool result</span>
+                    </div>
+                    <div class="w-28 shrink-0 font-mono text-sm text-cm-muted text-right">~60 KB</div>
+                </div>
+
+                <!-- Turn 5 -->
+                <div class="slide-in-2 flex items-center gap-4">
+                    <div class="w-20 shrink-0 text-right font-mono text-sm text-cm-muted">Turn 5</div>
+                    <div class="flex-1 bg-gray-100 rounded-lg h-10 overflow-hidden relative">
+                        <div class="absolute inset-y-0 left-0 bg-amber-500/30 rounded-lg" style="width:30%"></div>
+                        <span class="absolute inset-0 flex items-center justify-center font-mono text-xs text-cm-muted">everything from turns 1-4 + new output</span>
+                    </div>
+                    <div class="w-28 shrink-0 font-mono text-sm text-amber-700 text-right">~300 KB</div>
+                </div>
+
+                <!-- Turn 15 -->
+                <div class="slide-in-3 flex items-center gap-4">
+                    <div class="w-20 shrink-0 text-right font-mono text-sm text-cm-muted">Turn 15</div>
+                    <div class="flex-1 bg-gray-100 rounded-lg h-10 overflow-hidden relative">
+                        <div class="absolute inset-y-0 left-0 bg-orange-500/40 rounded-lg" style="width:60%"></div>
+                        <span class="absolute inset-0 flex items-center justify-center font-mono text-xs text-cm-text/60">all previous turns re-sent again</span>
+                    </div>
+                    <div class="w-28 shrink-0 font-mono text-sm text-orange-600 font-medium text-right">~600 KB</div>
+                </div>
+
+                <!-- Turn 30 -->
+                <div class="slide-in-4 flex items-center gap-4">
+                    <div class="w-20 shrink-0 text-right font-mono text-sm text-cm-muted">Turn 30</div>
+                    <div class="flex-1 bg-gray-100 rounded-lg h-10 overflow-hidden relative">
+                        <div class="absolute inset-y-0 left-0 bg-red-500/30 rounded-lg" style="width:90%"></div>
+                        <span class="absolute inset-0 flex items-center justify-center font-mono text-xs text-red-700 font-medium">context window almost full</span>
+                    </div>
+                    <div class="w-28 shrink-0 font-mono text-sm text-red-600 font-semibold text-right">~1.2 MB</div>
+                </div>
+
+                <!-- Compaction -->
+                <div class="slide-in-5 flex items-center gap-4">
+                    <div class="w-20 shrink-0 text-right font-mono text-sm text-red-600 font-bold">Turn 31</div>
+                    <div class="flex-1 bg-red-50 border-2 border-red-200 rounded-lg h-10 overflow-hidden relative">
+                        <span class="absolute inset-0 flex items-center justify-center font-mono text-sm text-red-600 font-semibold">COMPACTION &mdash; agent summarizes &amp; forgets everything</span>
+                    </div>
+                    <div class="w-28 shrink-0 font-mono text-sm text-red-600 font-bold text-right">RESET</div>
+                </div>
+            </div>
+        </div>
+        <div class="speaker-notes" data-notes="2">
+            <div class="notes-label">Slide 3</div>
+            <p>Here's what actually happens. <span class="pause">[pause]</span> Turn one, you ask something, a tool runs, sixty kilobytes come back. That's fine. Turn five, all the output from turns one through four gets re-sent along with the new stuff. Three hundred kilobytes now. Turn fifteen, everything ships again. Six hundred kilobytes. Turn thirty, you're at 1.2 megabytes and the context window is almost full. <span class="pause">[pause]</span> Turn thirty-one? The agent compacts. It summarizes the conversation. Throws away the originals. And just like that, it forgets everything it read, every decision it made, the task it was in the middle of. You start over.</p>
+        </div>
     </div>
-    <h1 class="anim3" style="font-size:52px;color:rgba(255,255,255,.6);font-weight:400">Productive rate improved in one week.</h1>
-    <div class="hr anim4"></div>
-    <p class="sub anim4" style="font-size:34px">Same team. Same tools.<br/><b>They just started measuring.</b></p>
-  </div>
 
-  <!-- 9 · PRICING ─────────────────────── -->
-  <div class="slide" id="s8">
-    <div class="label anim">Get Started</div>
-    <h1 class="anim2">$20<span style="font-size:.38em;color:rgba(255,255,255,.28);font-weight:300"> / seat / month</span></h1>
-    <div class="hr anim3"></div>
-    <p class="sub anim3" style="font-size:34px;max-width:880px"><b>No deployment. No workflow changes.</b><br/>Your engineers already have the plugin.<br/>Just invite them to the platform.</p>
-    <p class="sub anim4 mono" style="margin-top:40px;font-size:24px;color:rgba(103,232,249,.7)">clawcon.context-mode.com</p>
-    <p class="sub anim4" style="margin-top:28px;font-size:20px">Engineers at Microsoft · Google · Meta · Stripe · Datadog · Anthropic · Vercel · Cursor</p>
-  </div>
+    <!-- ==================== SLIDE 4: REAL SCENARIO ==================== -->
+    <div data-slide="3" class="slide">
+        <div class="max-w-4xl mx-auto w-full animate-in">
+            <div class="section-label mb-4">A real example</div>
+            <h2 class="font-serif text-5xl md:text-6xl text-cm-text mb-10">One command. 750,000 tokens.</h2>
 
-  <!-- 10 · CTA + QR ──────────────────── -->
-  <div class="slide" id="s9">
-    <div class="label anim">Links</div>
-    <h1 class="anim2" style="font-size:64px">context-mode</h1>
-    <div class="qr-wrap anim3">
-      <div class="qr-links">
-        <div><span style="color:rgba(255,255,255,.2)">Plugin →</span> <span>context-mode.com</span></div>
-        <div><span style="color:rgba(255,255,255,.2)">Platform →</span> <span>context-mode.com/insight</span></div>
-        <div><span style="color:rgba(255,255,255,.2)">Dashboard →</span> <span>clawcon.context-mode.com</span></div>
-        <div><span style="color:rgba(255,255,255,.2)">Speaker →</span> <span>linktr.ee/murataslan</span></div>
-      </div>
-      <div style="text-align:center">
-        <img class="qr-img"
-          src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&color=C4B5FD&bgcolor=0D0D0D&data=https://linktr.ee/murataslan"
-          width="240" height="240" alt="QR"/>
-        <p class="mono" style="font-size:16px;color:rgba(255,255,255,.2);margin-top:14px">linktr.ee/murataslan</p>
-      </div>
+            <!-- The cascade -->
+            <div class="max-w-3xl mx-auto">
+                <div class="flex items-center gap-6 mb-8">
+                    <div class="bg-gray-100 rounded-xl px-6 py-4 border border-cm-border">
+                        <div class="font-mono text-lg font-medium text-cm-text">gh issue list</div>
+                    </div>
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B45309" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    <div class="text-center">
+                        <div class="stat-rust text-5xl">59 KB</div>
+                        <div class="text-cm-muted text-sm mt-1">of JSON comes back</div>
+                    </div>
+                </div>
+
+                <div class="border-l-4 border-cm-rust/30 pl-8 space-y-6 mb-8">
+                    <div>
+                        <span class="font-sans text-xl text-cm-text">That&rsquo;s about <span class="stat-rust text-3xl">15,000</span> tokens.</span>
+                    </div>
+                    <div>
+                        <span class="font-sans text-xl text-cm-text">Next turn, those 15,000 tokens get sent <span class="font-semibold">again</span>.</span>
+                    </div>
+                    <div>
+                        <span class="font-sans text-xl text-cm-text">Turn after that, <span class="font-semibold">again</span>.</span>
+                    </div>
+                    <div>
+                        <span class="font-sans text-xl text-cm-text">Fifty turns in, that one command has cost you</span>
+                        <div class="stat-rust text-6xl mt-2">750,000 tokens</div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 border border-cm-border rounded-xl p-6 text-center">
+                    <span class="font-sans text-xl text-cm-muted">Now do that 20 times in a session.</span>
+                    <div class="stat-rust text-5xl mt-3">30 MB</div>
+                    <div class="text-cm-muted text-base mt-1">of input tokens on tool output alone.</div>
+                </div>
+            </div>
+        </div>
+        <div class="speaker-notes" data-notes="3">
+            <div class="notes-label">Slide 4</div>
+            <p>Let me make this concrete. <span class="pause">[pause]</span> You run gh issue list. One command. Fifty-nine kilobytes of JSON come back. About fifteen thousand tokens. Seems reasonable, right? <span class="pause">[pause]</span> But next turn, those fifteen thousand tokens ship again. Turn after that, again. Fifty turns in, that single command has cost you seven hundred fifty thousand input tokens. <span class="pause">[pause]</span> And you're not running one command per session. You're running twenty. Average output: thirty kilobytes each. That's thirty megabytes of input tokens. On tool output alone. That's where your context goes.</p>
+        </div>
     </div>
-  </div>
 
-</div><!-- /deck -->
-</div><!-- /scaler -->
+    <!-- ==================== SLIDE 5: THE BREAKING POINT ==================== -->
+    <div data-slide="4" class="slide">
+        <div class="max-w-4xl mx-auto w-full animate-in">
+            <div class="section-label mb-4">The breaking point</div>
+            <h2 class="font-serif text-5xl md:text-6xl text-cm-text mb-6">When the context fills up,<br>everything disappears.</h2>
 
-<!-- FOOTER LINKS -->
-<div id="links">
-  <a href="https://context-mode.com" target="_blank" rel="noopener">context-mode.com</a>
-  <span class="sep">·</span>
-  <a href="https://context-mode.com/insight" target="_blank" rel="noopener">context-mode.com/insight</a>
-  <span class="sep">·</span>
-  <a href="https://clawcon.context-mode.com" target="_blank" rel="noopener">clawcon.context-mode.com</a>
-</div>
+            <p class="font-sans text-xl text-cm-muted mb-10 max-w-2xl">
+                The agent compacts. Summarizes the conversation. Throws away the originals. Gone:
+            </p>
 
-<!-- NAV -->
-<div id="nav">
-  <span id="cnt">1 / 10</span>
-  <div class="nb" id="pb">←</div>
-  <div class="nb" id="nb">→</div>
-</div>
-<div id="prog"><div id="prog-fill"></div></div>
+            <div class="grid md:grid-cols-2 gap-x-12 gap-y-4 mb-12 max-w-2xl">
+                <div class="flex items-center gap-3 text-xl">
+                    <span class="text-cm-red text-2xl">&times;</span>
+                    <span class="font-sans text-cm-text">Files it read</span>
+                </div>
+                <div class="flex items-center gap-3 text-xl">
+                    <span class="text-cm-red text-2xl">&times;</span>
+                    <span class="font-sans text-cm-text">Decisions it made</span>
+                </div>
+                <div class="flex items-center gap-3 text-xl">
+                    <span class="text-cm-red text-2xl">&times;</span>
+                    <span class="font-sans text-cm-text">Errors it fixed</span>
+                </div>
+                <div class="flex items-center gap-3 text-xl">
+                    <span class="text-cm-red text-2xl">&times;</span>
+                    <span class="font-sans text-cm-text">Your corrections</span>
+                </div>
+                <div class="flex items-center gap-3 text-xl">
+                    <span class="text-cm-red text-2xl">&times;</span>
+                    <span class="font-sans text-cm-text">The task in progress</span>
+                </div>
+                <div class="flex items-center gap-3 text-xl">
+                    <span class="text-cm-red text-2xl">&times;</span>
+                    <span class="font-sans text-cm-text">Your instructions</span>
+                </div>
+            </div>
 
-<script>
-// ── CONFIG ──────────────────────────────
-const TOTAL = 10;
-let cur = 0;
+            <!-- Three stats -->
+            <div class="grid grid-cols-3 gap-8 border-t border-cm-border pt-8">
+                <div class="text-center">
+                    <div class="stat-rust text-6xl">50%</div>
+                    <div class="text-cm-muted text-base mt-2">accuracy drop at 32K tokens</div>
+                    <div class="font-mono text-xs text-cm-light mt-1">NoLiMa, 2025</div>
+                </div>
+                <div class="text-center border-l border-cm-border">
+                    <div class="stat-rust text-6xl">15 min</div>
+                    <div class="text-cm-muted text-base mt-2">lost re-explaining<br>your codebase</div>
+                </div>
+                <div class="text-center border-l border-cm-border">
+                    <div class="stat-rust text-6xl">$60K</div>
+                    <div class="text-cm-muted text-base mt-2">/year for a 50-seat team<br>on an agent that forgets</div>
+                </div>
+            </div>
+        </div>
+        <div class="speaker-notes" data-notes="4">
+            <div class="notes-label">Slide 5</div>
+            <p>And when it fills up, everything disappears. <span class="pause">[pause]</span> Files it read. Gone. Decisions it made. Gone. Errors it encountered and fixed. Gone. Your instructions and corrections. Gone. The task it was in the middle of building. Gone. <span class="pause">[pause]</span> Fifty percent accuracy drop after thirty-two thousand tokens. Fifteen minutes lost every time it resets, re-explaining your codebase from scratch. Sixty thousand dollars a year for a fifty-seat team, burned on an agent that forgets everything every twenty minutes.</p>
+        </div>
+    </div>
 
-// ── ANIMATED COUNTER ────────────────────
-function countTo(el, target, duration) {
-  let start = 0, step = target / (duration / 16);
-  let id = setInterval(() => {
-    start = Math.min(start + step, target);
-    el.textContent = Math.floor(start).toLocaleString();
-    if (start >= target) clearInterval(id);
-  }, 16);
-}
+    <!-- ==================== SLIDE 6: TRANSITION ==================== -->
+    <div data-slide="5" class="slide">
+        <div class="max-w-4xl mx-auto text-center animate-in">
+            <div class="section-label mb-8">The Solution</div>
+            <h2 class="font-serif text-6xl md:text-7xl lg:text-8xl text-cm-text leading-tight">
+                What if the data<br>never entered context?
+            </h2>
+        </div>
+        <div class="speaker-notes" data-notes="5">
+            <div class="notes-label">Slide 6</div>
+            <p><span class="pause">[let it sit for a moment]</span> What if the data never entered the context window in the first place?</p>
+        </div>
+    </div>
 
-// ── ANIMATED BARS ───────────────────────
-function animBars() {
-  const data = [{id:'b1',w:'50%'},{id:'b2',w:'25%'},{id:'b3',w:'25%'}];
-  data.forEach(d => {
-    const el = document.getElementById(d.id);
-    if (el) setTimeout(() => el.style.width = d.w, 200);
-  });
-}
+    <!-- ==================== SLIDE 7: INTERCEPT ==================== -->
+    <div data-slide="6" class="slide">
+        <div class="max-w-5xl mx-auto w-full animate-in">
+            <div class="section-label mb-4">context-mode &middot; Step 1</div>
+            <h2 class="font-serif text-5xl md:text-6xl text-cm-text mb-10">Intercept.</h2>
 
-// ── RESET BARS ──────────────────────────
-function resetBars() {
-  ['b1','b2','b3'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.width = '0';
-  });
-}
+            <!-- Animated flow diagram -->
+            <div class="max-w-3xl mx-auto">
+                <!-- Flow: Agent → Tool → Output → context-mode intercepts -->
+                <div class="relative">
+                    <!-- Step 1: Agent calls tool -->
+                    <div class="flow-step-1 flex items-center gap-4 mb-6">
+                        <div class="bg-gray-100 rounded-xl px-5 py-3 border border-cm-border shrink-0">
+                            <span class="font-mono text-base text-cm-text">Agent</span>
+                        </div>
+                        <div class="flex-1 flex items-center">
+                            <div class="flex-1 h-[2px] bg-cm-border relative">
+                                <div class="flow-arrow absolute inset-y-0 left-0 h-[2px] bg-cm-rust" style="animation: growBar 1s ease forwards; animation-delay: 0.3s; width: 0;"></div>
+                            </div>
+                            <span class="font-mono text-xs text-cm-muted mx-2">calls</span>
+                            <div class="flex-1 h-[2px] bg-cm-border relative">
+                                <div class="flow-arrow absolute inset-y-0 left-0 h-[2px] bg-cm-rust" style="animation: growBar 1s ease forwards; animation-delay: 0.6s; width: 0;"></div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-100 rounded-xl px-5 py-3 border border-cm-border shrink-0">
+                            <span class="font-mono text-base text-cm-text">gh issue list</span>
+                        </div>
+                    </div>
 
-// ── SLIDE LOGIC ─────────────────────────
-function go(n) {
-  const slides = document.querySelectorAll('.slide');
-  slides[cur].classList.remove('active');
-  // reset animations
-  slides[cur].querySelectorAll('.anim,.anim2,.anim3,.anim4').forEach(el => {
-    el.style.animation = 'none';
-    void el.offsetWidth; // reflow
-    el.style.animation = '';
-  });
+                    <!-- Step 2: 59KB output -->
+                    <div class="flow-step-2 flex items-center justify-center mb-6" style="animation: fadeInUp 0.6s ease forwards; animation-delay: 1s; opacity: 0;">
+                        <div class="bg-red-50 border-2 border-cm-red/30 rounded-xl px-6 py-4 text-center">
+                            <div class="stat-rust text-4xl">59 KB</div>
+                            <div class="text-cm-muted text-sm mt-1">raw JSON output</div>
+                        </div>
+                    </div>
 
-  cur = ((n % TOTAL) + TOTAL) % TOTAL;
-  slides[cur].classList.add('active');
+                    <!-- Step 3: context-mode intercepts -->
+                    <div class="flow-step-3 flex items-center justify-center gap-4" style="animation: fadeInUp 0.6s ease forwards; animation-delay: 1.6s; opacity: 0;">
+                        <div class="bg-cm-rust/5 border-2 border-cm-rust/40 rounded-2xl px-8 py-5 text-center relative">
+                            <div class="font-mono text-xs uppercase tracking-widest text-cm-rust/60 mb-2">5 lifecycle hooks</div>
+                            <div class="font-serif italic text-3xl text-cm-rust mb-1">context-mode</div>
+                            <div class="font-sans text-sm text-cm-muted">intercepts via PostToolUse hook</div>
+                            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-cm-rust text-white font-mono text-[10px] px-3 py-1 rounded-full uppercase tracking-wider">intercept</div>
+                        </div>
+                    </div>
 
-  // trigger per-slide effects
-  if (cur === 1) { // problem — counter to 750000
-    const el = document.getElementById('counter1');
-    if (el) { el.textContent = '0'; setTimeout(() => countTo(el, 750000, 1600), 400); }
-  }
-  if (cur === 5) animBars(); else resetBars(); // dashboard bars
-  if (cur === 7) { // 368%
-    const el = document.getElementById('counter2');
-    if (el) { el.textContent = '0'; setTimeout(() => countTo(el, 368, 900), 300); }
-  }
+                    <!-- Step 4: Result -->
+                    <div class="flex items-center justify-center gap-8 mt-6" style="animation: fadeInUp 0.6s ease forwards; animation-delay: 2.2s; opacity: 0;">
+                        <div class="text-center">
+                            <div class="text-cm-muted text-xs font-mono uppercase tracking-wider mb-1">context window</div>
+                            <div class="font-mono text-cm-green font-semibold text-2xl">1.1 KB</div>
+                            <div class="text-cm-muted text-xs">summary only</div>
+                        </div>
+                        <div class="text-cm-border text-2xl">&larr;</div>
+                        <div class="text-center">
+                            <div class="text-cm-muted text-xs font-mono uppercase tracking-wider mb-1">FTS5 database</div>
+                            <div class="font-mono text-cm-rust font-semibold text-2xl">59 KB</div>
+                            <div class="text-cm-muted text-xs">searchable, indexed</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="speaker-notes" data-notes="6">
+            <div class="notes-label">Slide 7</div>
+            <p>context-mode intercepts. <span class="pause">[pause]</span> Your agent calls gh issue list. Fifty-nine kilobytes of JSON come back. Normally, all of that dumps straight into your context window. But context-mode is sitting between the agent and its tools. It uses five lifecycle hooks — PreToolUse, PostToolUse, SessionStart, PreCompact, UserPromptSubmit — to intercept tool output before it reaches the conversation. The full fifty-nine kilobytes goes to a local FTS5 database. Only a one-point-one kilobyte summary enters context. The agent still gets the answer. Your context window barely notices.</p>
+        </div>
+    </div>
 
-  // nav
-  document.getElementById('cnt').textContent = (cur+1) + ' / ' + TOTAL;
-  document.getElementById('prog-fill').style.width = ((cur+1)/TOTAL*100) + '%';
-}
+    <!-- ==================== SLIDE 8: SANDBOX ==================== -->
+    <div data-slide="7" class="slide">
+        <div class="max-w-5xl mx-auto w-full animate-in">
+            <div class="section-label mb-4">context-mode &middot; Step 2</div>
+            <h2 class="font-serif text-5xl md:text-6xl text-cm-text mb-10">Sandbox.</h2>
 
-document.getElementById('nb').onclick = () => go(cur + 1);
-document.getElementById('pb').onclick = () => go(cur - 1);
+            <div class="max-w-3xl mx-auto">
+                <p class="font-sans text-2xl text-cm-muted mb-10 max-w-2xl">
+                    Don&rsquo;t pull data into context.<br>
+                    <span class="text-cm-text font-semibold">Send code to the data.</span>
+                </p>
 
-document.addEventListener('keydown', e => {
-  if (['ArrowRight','Space','Enter'].includes(e.code)) { e.preventDefault(); go(cur+1); }
-  if (['ArrowLeft','Backspace'].includes(e.code))      { e.preventDefault(); go(cur-1); }
-  if (e.key === 'Home') go(0);
-  if (e.key === 'End')  go(TOTAL-1);
-  if (e.key.toLowerCase() === 'f') {
-    document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
-  }
-});
+                <!-- Before: Pull raw data -->
+                <div class="mb-6 slide-in-1">
+                    <div class="font-mono text-xs uppercase tracking-widest text-cm-red/60 mb-3">Before: Pull data into context</div>
+                    <div class="bg-gray-50 border border-cm-border rounded-xl p-5 font-mono text-sm leading-relaxed">
+                        <span class="text-cm-red">cat</span> access.log &nbsp;&nbsp;<span class="text-cm-muted"># 45 KB enters context</span><br>
+                        <span class="text-cm-muted"># Agent reads all 45 KB, writes summary</span><br>
+                        <span class="text-cm-muted"># 45 KB stays in context FOREVER</span>
+                    </div>
+                </div>
 
-// click zones: left 30% = prev, right 70% = next
-document.addEventListener('click', e => {
-  if (e.target.closest('#nav') || e.target.closest('#links')) return;
-  e.clientX / window.innerWidth < 0.3 ? go(cur-1) : go(cur+1);
-});
+                <!-- After: Think in Code -->
+                <div class="mb-8 slide-in-2">
+                    <div class="font-mono text-xs uppercase tracking-widest text-cm-green/60 mb-3">After: Think in Code&trade;</div>
+                    <div class="bg-gray-50 border-2 border-cm-green/30 rounded-xl p-5 font-mono text-sm leading-relaxed">
+                        <span class="text-cm-green">ctx_execute</span>(<span class="text-cm-rust">"javascript"</span>, <span class="text-cm-muted">`</span><br>
+                        &nbsp;&nbsp;<span class="text-cm-text">const logs = fs.readFileSync('access.log')</span><br>
+                        &nbsp;&nbsp;<span class="text-cm-text">const errors = logs.filter(l =&gt; l.status &gt;= 500)</span><br>
+                        &nbsp;&nbsp;<span class="text-cm-text">console.log(errors.length + ' server errors')</span><br>
+                        <span class="text-cm-muted">`</span>)
+                    </div>
+                </div>
 
-// touch swipe
-let tx = 0;
-document.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
-document.addEventListener('touchend', e => {
-  const dx = tx - e.changedTouches[0].clientX;
-  if (Math.abs(dx) > 50) dx > 0 ? go(cur+1) : go(cur-1);
-}, {passive:true});
+                <!-- Result comparison -->
+                <div class="slide-in-3 grid grid-cols-2 gap-6">
+                    <div class="text-center bg-red-50/50 rounded-xl p-5 border border-cm-red/10">
+                        <div class="stat-rust text-5xl" style="color: #DC2626;">45 KB</div>
+                        <div class="text-cm-muted text-sm mt-2">enters context (before)</div>
+                    </div>
+                    <div class="text-center bg-green-50/50 rounded-xl p-5 border border-cm-green/10">
+                        <div class="stat-rust text-5xl" style="color: #16A34A;">155 B</div>
+                        <div class="text-cm-muted text-sm mt-2">enters context (after)</div>
+                        <div class="font-mono text-xs text-cm-green mt-1">200&times; reduction</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="speaker-notes" data-notes="7">
+            <div class="notes-label">Slide 8</div>
+            <p>Sandbox. <span class="pause">[pause]</span> This is the paradigm shift. We call it Think in Code. Instead of pulling forty-five kilobytes of access logs into your context window for the agent to read, you send code to the data. The agent writes a small script, context-mode executes it in a sandbox, and only the stdout — one hundred fifty-five bytes — enters context. <span class="pause">[pause]</span> Two hundred times reduction. The agent still gets the answer. It wrote the analysis. But the raw data never touched the context window. This is mandatory across all fourteen platforms context-mode supports.</p>
+        </div>
+    </div>
 
-// ── SCALE TO VIEWPORT ───────────────────
-function scale() {
-  const s = Math.min(window.innerWidth/1920, window.innerHeight/1080);
-  const x = (window.innerWidth  - 1920*s) / 2;
-  const y = (window.innerHeight - 1080*s) / 2;
-  document.getElementById('deck').style.transform = `translate(${x}px,${y}px) scale(${s})`;
-}
-scale();
-window.addEventListener('resize', scale);
+    <!-- ==================== SLIDE 9: INDEX ==================== -->
+    <div data-slide="8" class="slide">
+        <div class="max-w-5xl mx-auto w-full animate-in">
+            <div class="section-label mb-4">context-mode &middot; Step 3</div>
+            <h2 class="font-serif text-5xl md:text-6xl text-cm-text mb-10">Index.</h2>
 
-// init progress
-document.getElementById('prog-fill').style.width = (1/TOTAL*100)+'%';
-</script>
+            <div class="max-w-3xl mx-auto">
+                <p class="font-sans text-2xl text-cm-muted mb-10 max-w-2xl">
+                    Everything the agent learns is <span class="text-cm-text font-semibold">searchable forever</span>.
+                    Even across compactions <span class="text-cm-text font-semibold">and sessions</span>.
+                </p>
+
+                <!-- Unified Timeline Search — 3 sources -->
+                <div class="bg-gray-50 border border-cm-border rounded-2xl p-8 mb-8">
+                    <div class="font-mono text-xs uppercase tracking-widest text-cm-muted mb-2">Unified Timeline Search</div>
+                    <div class="font-mono text-xs text-cm-muted mb-5">ctx_search(sort: &quot;timeline&quot;)</div>
+
+                    <div class="space-y-3">
+                        <div class="slide-in-1 flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-cm-rust shrink-0"></div>
+                            <div class="flex-1 bg-white border border-cm-border rounded-lg px-4 py-2.5 flex justify-between items-center">
+                                <span class="font-mono text-sm text-cm-text">current session</span>
+                                <span class="font-mono text-xs text-cm-muted">tool outputs, sandbox results, web pages</span>
+                            </div>
+                        </div>
+                        <div class="slide-in-2 flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-cm-blue shrink-0"></div>
+                            <div class="flex-1 bg-blue-50/50 border border-cm-blue/20 rounded-lg px-4 py-2.5 flex justify-between items-center">
+                                <span class="font-mono text-sm text-cm-text font-medium">prior sessions</span>
+                                <span class="font-mono text-xs text-cm-blue">last 7 days &middot; SessionDB</span>
+                            </div>
+                        </div>
+                        <div class="slide-in-3 flex items-center gap-3">
+                            <div class="w-2 h-2 rounded-full bg-cm-green shrink-0"></div>
+                            <div class="flex-1 bg-green-50/50 border border-cm-green/20 rounded-lg px-4 py-2.5 flex justify-between items-center">
+                                <span class="font-mono text-sm text-cm-text font-medium">auto-memory</span>
+                                <span class="font-mono text-xs text-cm-green">persistent preferences &middot; memory/*.md</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Auto-injection on compaction -->
+                <div class="slide-in-4 bg-gray-50 border border-cm-border rounded-2xl p-6 mb-8">
+                    <div class="font-mono text-xs uppercase tracking-widest text-cm-muted mb-4">On compaction &mdash; auto-injected</div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="font-mono text-sm text-cm-rust font-medium mb-1">&lt;behavioral_directive&gt;</div>
+                            <div class="text-cm-muted text-xs">active roles</div>
+                        </div>
+                        <div class="text-center border-l border-cm-border">
+                            <div class="font-mono text-sm text-cm-rust font-medium mb-1">&lt;rules&gt;</div>
+                            <div class="text-cm-muted text-xs">key decisions</div>
+                        </div>
+                        <div class="text-center border-l border-cm-border">
+                            <div class="font-mono text-sm text-cm-rust font-medium mb-1">&lt;active_skills&gt;</div>
+                            <div class="text-cm-muted text-xs">loaded skills</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session persistence highlight -->
+                <div class="slide-in-5 bg-cm-rust/5 border border-cm-rust/20 rounded-xl p-6 text-center">
+                    <div class="font-serif italic text-3xl text-cm-rust mb-2">Unified Persistent Memory</div>
+                    <p class="font-sans text-lg text-cm-muted max-w-xl mx-auto">
+                        <span class="stat-rust text-2xl">26</span> event categories survive compaction, <span class="font-mono text-sm">--resume</span>, and new sessions.
+                        The agent never re-learns your codebase.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="speaker-notes" data-notes="8">
+            <div class="notes-label">Slide 9</div>
+            <p>Index. <span class="pause">[pause]</span> Everything the agent touches goes into a local FTS5 database with BM25 ranking. Tool outputs, web pages, sandbox results — all searchable. But here's what makes it special: session persistence. <span class="pause">[pause]</span> Twenty-six event categories — files modified, decisions made, errors encountered, user corrections, git state, environment details — all of it carries over through compactions and even through session resume. The agent compacts? It doesn't forget. It searches the knowledge base and picks up right where it left off. You never have to explain your codebase twice.</p>
+        </div>
+    </div>
+
+    <!-- ==================== SLIDE 10: MEASURED RESULTS ==================== -->
+    <div data-slide="9" class="slide">
+        <div class="max-w-5xl mx-auto w-full animate-in">
+            <div class="section-label mb-4">Measured Results</div>
+            <h2 class="font-serif text-5xl md:text-6xl text-cm-text mb-10">Before &amp; After.</h2>
+
+            <!-- Before / After comparison -->
+            <div class="grid md:grid-cols-2 gap-8 mb-10 max-w-3xl mx-auto">
+                <!-- Before -->
+                <div class="border border-cm-red/20 rounded-2xl p-6 bg-red-50/30">
+                    <div class="font-mono text-xs uppercase tracking-widest text-cm-red/60 mb-4">Without context-mode</div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center font-sans text-base">
+                            <span class="text-cm-text">Playwright snapshot</span>
+                            <span class="font-mono text-cm-red font-semibold">56 KB</span>
+                        </div>
+                        <div class="flex justify-between items-center font-sans text-base">
+                            <span class="text-cm-text">GitHub Issues query</span>
+                            <span class="font-mono text-cm-red font-semibold">59 KB</span>
+                        </div>
+                        <div class="flex justify-between items-center font-sans text-base">
+                            <span class="text-cm-text">Access log analysis</span>
+                            <span class="font-mono text-cm-red font-semibold">45 KB</span>
+                        </div>
+                        <div class="border-t border-cm-red/20 pt-3 flex justify-between items-center font-sans text-lg font-semibold">
+                            <span class="text-cm-text">Per session (50 turns)</span>
+                            <span class="font-mono text-cm-red">30 MB re-sent</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- After -->
+                <div class="border border-cm-green/20 rounded-2xl p-6 bg-green-50/30">
+                    <div class="font-mono text-xs uppercase tracking-widest text-cm-green/60 mb-4">With context-mode</div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center font-sans text-base">
+                            <span class="text-cm-text">Playwright snapshot</span>
+                            <span class="font-mono text-cm-green font-semibold">299 B <span class="text-cm-muted font-normal text-sm">(99.5%)</span></span>
+                        </div>
+                        <div class="flex justify-between items-center font-sans text-base">
+                            <span class="text-cm-text">GitHub Issues query</span>
+                            <span class="font-mono text-cm-green font-semibold">1.1 KB <span class="text-cm-muted font-normal text-sm">(98%)</span></span>
+                        </div>
+                        <div class="flex justify-between items-center font-sans text-base">
+                            <span class="text-cm-text">Access log analysis</span>
+                            <span class="font-mono text-cm-green font-semibold">155 B <span class="text-cm-muted font-normal text-sm">(99.7%)</span></span>
+                        </div>
+                        <div class="border-t border-cm-green/20 pt-3 flex justify-between items-center font-sans text-lg font-semibold">
+                            <span class="text-cm-text">Per session (50 turns)</span>
+                            <span class="font-mono text-cm-green">1 MB re-sent</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Big stat -->
+            <div class="text-center">
+                <div class="stat-rust text-8xl md:text-9xl" style="animation: countUp 0.8s ease forwards; animation-delay: 0.8s; opacity: 0; transform: scale(0.8);">98&ndash;99.5%</div>
+                <div class="text-cm-muted font-sans text-xl mt-3">context reduction. Same work. Same answers.</div>
+            </div>
+        </div>
+        <div class="speaker-notes" data-notes="9">
+            <div class="notes-label">Slide 10</div>
+            <p>Let's look at the numbers. <span class="pause">[pause]</span> Playwright snapshot: fifty-six kilobytes down to two hundred ninety-nine bytes. Ninety-nine point five percent reduction. GitHub issues: fifty-nine kilobytes down to one point one. Access logs: forty-five kilobytes down to one hundred fifty-five bytes. <span class="pause">[pause]</span> Per session, thirty megabytes re-sent becomes one megabyte. Ninety-eight to ninety-nine point five percent context reduction. Same work. Same answers. The agent doesn't lose any capability. It just stops wasting your context window on data it already processed.</p>
+        </div>
+    </div>
+
+    <!-- ==================== SLIDE 11: CLOSE ==================== -->
+    <div data-slide="10" class="slide">
+        <div class="max-w-4xl mx-auto text-center animate-in">
+            <div class="section-label mb-6">Open Source</div>
+            <h2 class="font-serif italic text-7xl md:text-8xl lg:text-9xl mb-3 text-cm-text">
+                context-mode
+            </h2>
+            <p class="text-cm-muted font-sans text-xl mb-10">
+                The other half of the context problem.
+            </p>
+
+            <div class="flex flex-wrap items-center justify-center gap-10 mb-10">
+                <div class="text-center">
+                    <div id="stat-users" class="stat-rust text-5xl">95K+</div>
+                    <div class="text-cm-muted text-sm mt-1">users</div>
+                </div>
+                <div class="text-center">
+                    <div id="stat-npm" class="stat-rust text-5xl">79K</div>
+                    <div class="text-cm-muted text-sm mt-1">npm</div>
+                </div>
+                <div class="text-center">
+                    <div class="stat-rust text-5xl">14</div>
+                    <div class="text-cm-muted text-sm mt-1">platforms</div>
+                </div>
+                <div class="text-center">
+                    <div id="stat-stars" class="stat-rust text-5xl">10K</div>
+                    <div class="text-cm-muted text-sm mt-1">GitHub stars</div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-8">
+                <span class="px-3 py-1.5 rounded-full border border-cm-border text-cm-text/70 text-sm font-mono">Claude Code</span>
+                <span class="px-3 py-1.5 rounded-full border border-cm-border text-cm-text/70 text-sm font-mono">Codex</span>
+                <span class="px-3 py-1.5 rounded-full border border-cm-border text-cm-text/70 text-sm font-mono">Cursor</span>
+                <span class="px-3 py-1.5 rounded-full border border-cm-border text-cm-text/70 text-sm font-mono">Gemini</span>
+                <span class="px-3 py-1.5 rounded-full border-2 border-cm-rust text-cm-rust text-sm font-mono font-medium">OpenClaw</span>
+                <span class="px-3 py-1.5 rounded-full border border-cm-border text-cm-text/70 text-sm font-mono">Kiro</span>
+                <span class="px-3 py-1.5 rounded-full border border-cm-border text-cm-text/70 text-sm font-mono">Cline</span>
+                <span class="px-3 py-1.5 rounded-full border border-cm-border text-cm-text/70 text-sm font-mono">+7</span>
+            </div>
+
+            <div class="font-mono text-lg text-cm-rust font-medium mb-8">context-mode.com</div>
+
+            <div class="border-t border-cm-border pt-6">
+                <p class="text-cm-muted font-sans text-lg">Thank you.</p>
+            </div>
+        </div>
+        <div class="speaker-notes" data-notes="10">
+            <div class="notes-label">Slide 11</div>
+            <p>context-mode. Open source. Always has been. <span class="pause">[pause]</span> A hundred and twenty-five thousand users. A hundred and four thousand npm downloads. Fourteen platform adapters, including a native OpenClaw adapter, which feels right to mention here tonight. Twelve and a half thousand GitHub stars. <span class="pause">[pause]</span> It's open source because I believe the answer to the problem I just showed you can only come from the community, not from vendors. <span class="pause">[pause]</span> context-mode.com. Thank you again to Veli, Furkan, Murat, and ClawCon.</p>
+        </div>
+    </div>
+
+    <!-- ==================== JS ==================== -->
+    <script>
+        let current = 0;
+        const total = 11;
+        let notesVisible = false;
+
+        function showSlide(n) {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            const slide = document.querySelector(`[data-slide="${n}"]`);
+            slide.classList.add('active');
+
+            const container = slide.querySelector('.animate-in');
+            if (container) {
+                container.classList.remove('animate-in');
+                void container.offsetWidth;
+                container.classList.add('animate-in');
+            }
+
+            // Re-trigger slide-in animations
+            slide.querySelectorAll('[class*="slide-in-"]').forEach(el => {
+                const classes = [...el.classList];
+                el.classList.remove(...classes.filter(c => c.startsWith('slide-in-')));
+                void el.offsetWidth;
+                el.classList.add(...classes.filter(c => c.startsWith('slide-in-')));
+            });
+
+            document.getElementById('slideCounter').textContent = `${n + 1} / ${total}`;
+            document.getElementById('progressBar').style.width = `${((n + 1) / total) * 100}%`;
+            updateNotes(n);
+        }
+
+        function updateNotes(n) {
+            document.querySelectorAll('.speaker-notes').forEach(note => note.classList.remove('visible'));
+            if (notesVisible) {
+                const note = document.querySelector(`[data-notes="${n}"]`);
+                if (note) note.classList.add('visible');
+            }
+        }
+
+        function toggleNotes() { notesVisible = !notesVisible; updateNotes(current); }
+        function nextSlide() { if (current < total - 1) showSlide(++current); }
+        function prevSlide() { if (current > 0) showSlide(--current); }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextSlide(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); prevSlide(); }
+            if (e.key === 'Home') { e.preventDefault(); current = 0; showSlide(0); }
+            if (e.key === 'End') { e.preventDefault(); current = total - 1; showSlide(current); }
+            if (e.key === 's' || e.key === 'S') { e.preventDefault(); toggleNotes(); }
+        });
+
+        let touchStartX = 0;
+        document.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+        document.addEventListener('touchend', (e) => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 50) { diff > 0 ? nextSlide() : prevSlide(); }
+        });
+
+        // Dynamic stats — fetch from stats.json CDN + GitHub API, fallback to hardcoded values
+        async function fetchStats() {
+            try {
+                const [stats, gh] = await Promise.allSettled([
+                    fetch('https://cdn.jsdelivr.net/gh/mksglu/context-mode@main/stats.json').then(r => r.json()),
+                    fetch('https://api.github.com/repos/mksglu/context-mode').then(r => r.json()),
+                ]);
+                if (stats.status === 'fulfilled') {
+                    const s = stats.value;
+                    if (s.message) document.getElementById('stat-users').textContent = s.message;
+                    if (s.npm) document.getElementById('stat-npm').textContent = s.npm;
+                }
+                if (gh.status === 'fulfilled' && gh.value.stargazers_count) {
+                    const stars = gh.value.stargazers_count;
+                    document.getElementById('stat-stars').textContent =
+                        stars >= 1000 ? (stars / 1000).toFixed(stars >= 10000 ? 1 : 1) + 'K' : stars;
+                }
+            } catch (_) { /* keep fallback values */ }
+        }
+        fetchStats();
+    </script>
 </body>
 </html>
