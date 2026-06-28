@@ -18,12 +18,13 @@ body{
 /* ── SCALE WRAPPER ── */
 #scaler{
   position:fixed;inset:0;
-  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
 }
 .deck{
   width:1920px;height:1080px;
-  position:relative;
-  transform-origin:top left;
+  position:absolute;
+  top:0;left:0;
+  transform-origin:0 0;
 }
 
 /* ── SLIDES ── */
@@ -480,12 +481,10 @@ document.addEventListener('touchend', e => {
 
 // ── SCALE TO VIEWPORT ───────────────────
 function scale() {
-  const sc = document.getElementById('scaler');
-  const dk = document.getElementById('deck');
-  const s  = Math.min(sc.clientWidth/1920, sc.clientHeight/1080);
-  dk.style.transform = `scale(${s})`;
-  dk.style.marginLeft = ((sc.clientWidth  - 1920*s)/2)+'px';
-  dk.style.marginTop  = ((sc.clientHeight - 1080*s)/2)+'px';
+  const s = Math.min(window.innerWidth/1920, window.innerHeight/1080);
+  const x = (window.innerWidth  - 1920*s) / 2;
+  const y = (window.innerHeight - 1080*s) / 2;
+  document.getElementById('deck').style.transform = `translate(${x}px,${y}px) scale(${s})`;
 }
 scale();
 window.addEventListener('resize', scale);
