@@ -1,187 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>context-mode — ClawCon Ankara 2</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <style>
-    .reveal-viewport { background: #111213; }
-    .reveal { font-family: 'Inter', sans-serif; color: #e8eaed; }
-    .reveal h1 { font-size: 2.6em; font-weight: 900; color: #fff; line-height: 1.1; letter-spacing: -0.03em; text-transform: none; text-shadow: none; }
-    .reveal h2 { font-size: 1.4em; font-weight: 600; color: #AC9EF5; text-transform: none; text-shadow: none; letter-spacing: -0.01em; }
-    .reveal h3 { font-size: 0.75em; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.1em; text-shadow: none; }
-    .reveal p  { color: #9ca3af; font-size: 0.7em; line-height: 1.6; }
-    .reveal strong { color: #e8eaed; }
-    .reveal section { padding: 0 80px; }
-    .reveal .slides section { background: transparent; }
-    .reveal .slide-number { color: #374151; }
-    .reveal .progress { color: #AC9EF5; }
-    .reveal .controls { color: #AC9EF5; }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>context-mode — ClawCon Ankara 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#0D0D0D}
 
-    .big { font-size: 5em; font-weight: 900; background: linear-gradient(135deg, #AC9EF5, #7dd3fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; display: block; }
-    .mono { font-family: 'JetBrains Mono', monospace; background: #1a1d20; color: #7dd3fc; padding: 14px 24px; border-radius: 8px; display: inline-block; font-size: 0.65em; margin: 12px 0; border: 1px solid #2d3748; }
-    .tag  { display: inline-block; background: #1f1d35; border: 1px solid #3d3870; color: #AC9EF5; border-radius: 100px; font-size: 0.45em; padding: 4px 14px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; vertical-align: middle; }
-    .row  { display: flex; gap: 32px; align-items: flex-start; margin: 8px 0; }
-    .role { flex-shrink: 0; width: 70px; font-weight: 700; font-size: 0.6em; color: #AC9EF5; padding-top: 2px; }
-    .q    { font-size: 0.55em; color: #6b7280; }
-    .a    { font-size: 0.58em; color: #e8eaed; margin-top: 2px; }
-    .sep  { border: none; height: 1px; background: #1f2937; margin: 20px 0; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin: 28px 0; }
-    .box  { background: #18191b; border: 1px solid #2d3748; border-radius: 12px; padding: 24px 20px; text-align: center; }
-    .num  { font-size: 2.2em; font-weight: 800; color: #fff; display: block; line-height: 1; }
-    .lbl  { font-size: 0.45em; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-top: 6px; }
-    .qr   { border-radius: 10px; border: 1px solid #2d3748; }
-    .url  { font-family: 'JetBrains Mono', monospace; color: #7dd3fc; font-size: 0.65em; }
-    .muted { color: #6b7280 !important; }
-  </style>
+/* dot grid texture */
+body{
+  background-color:#0D0D0D;
+  background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:32px 32px;
+}
+
+.deck{
+  width:1920px;height:1080px;
+  position:relative;
+  transform-origin:top left;
+}
+
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 160px;
+  opacity:0;pointer-events:none;
+  transition:opacity .4s ease;
+}
+.slide.active{opacity:1;pointer-events:all}
+
+/* click zones */
+.slide::before,.slide::after{
+  content:'';position:absolute;top:0;bottom:0;z-index:10;cursor:pointer;
+}
+.slide::before{left:0;width:30%}
+.slide::after{right:0;width:70%}
+
+/* typography */
+.eyebrow{
+  font-family:'Space Mono',monospace;
+  font-size:18px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+  margin-bottom:28px;
+}
+h1{
+  font-family:'Outfit',sans-serif;font-weight:900;
+  font-size:72px;line-height:1.05;letter-spacing:-.03em;
+  color:#fff;
+  margin-bottom:24px;
+}
+h2{
+  font-family:'Outfit',sans-serif;font-weight:600;
+  font-size:48px;line-height:1.2;
+  color:rgba(255,255,255,.5);
+}
+.body{
+  font-family:'Outfit',sans-serif;font-weight:300;
+  font-size:28px;line-height:1.6;
+  color:rgba(255,255,255,.55);
+  max-width:900px;
+}
+.accent{color:#C4B5FD}
+.highlight{color:#fff;font-weight:600}
+.mono{font-family:'Space Mono',monospace}
+
+/* big number */
+.big-num{
+  font-family:'Space Mono',monospace;font-weight:700;
+  font-size:160px;line-height:1;
+  background:linear-gradient(135deg,#C4B5FD,#67E8F9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* pill */
+.pill{
+  display:inline-block;
+  border:1px solid rgba(196,181,253,.3);
+  color:#C4B5FD;border-radius:100px;
+  font-family:'Space Mono',monospace;font-size:16px;
+  padding:6px 18px;letter-spacing:.06em;text-transform:uppercase;
+  margin-bottom:32px;
+}
+
+/* stat cards */
+.stats{display:flex;gap:24px;margin-top:52px}
+.stat{
+  flex:1;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:32px 28px;
+  background:rgba(255,255,255,.03);
+}
+.stat-n{
+  font-family:'Space Mono',monospace;font-weight:700;
+  font-size:52px;color:#C4B5FD;display:block;line-height:1;
+}
+.stat-l{
+  font-family:'Outfit',sans-serif;font-size:18px;
+  color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;
+  display:block;margin-top:10px;
+}
+
+/* divider */
+.div{
+  width:64px;height:3px;
+  background:linear-gradient(90deg,#C4B5FD,#67E8F9);
+  border-radius:2px;margin:36px 0;
+}
+
+/* terminal block */
+.terminal{
+  background:#050505;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;
+  padding:40px 48px;
+  font-family:'Space Mono',monospace;
+  font-size:22px;line-height:1.9;
+  color:rgba(255,255,255,.4);
+  max-width:1100px;
+  margin-top:40px;
+}
+.terminal .cmd{color:#fff}
+.terminal .out{color:#67E8F9}
+
+/* role rows */
+.role-list{margin-top:36px;max-width:1100px}
+.role-row{display:flex;gap:40px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.role-row:last-child{border:none}
+.role-tag{
+  font-family:'Space Mono',monospace;font-size:18px;
+  color:#C4B5FD;font-weight:700;
+  flex-shrink:0;width:90px;padding-top:2px;
+}
+.role-q{font-size:22px;color:rgba(255,255,255,.3);margin-bottom:4px}
+.role-a{font-size:22px;color:rgba(255,255,255,.75)}
+
+/* bar chart */
+.bars{margin-top:40px;max-width:800px}
+.bar-row{display:flex;align-items:center;gap:20px;margin-bottom:18px}
+.bar-label{font-size:20px;color:rgba(255,255,255,.5);width:260px;flex-shrink:0}
+.bar-track{flex:1;height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+.bar-fill{height:100%;border-radius:5px}
+.bar-pct{font-family:'Space Mono',monospace;font-size:18px;color:rgba(255,255,255,.4);width:44px;text-align:right}
+
+/* two col */
+.two-col{display:flex;gap:80px;align-items:flex-start;margin-top:40px}
+.col{flex:1}
+.col-label{font-family:'Space Mono',monospace;font-size:16px;color:rgba(255,255,255,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
+.metric-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:22px}
+.metric-key{color:rgba(255,255,255,.4)}
+.metric-val{color:#fff;font-weight:600}
+
+/* nav */
+#nav{
+  position:fixed;bottom:36px;right:48px;z-index:100;
+  display:flex;align-items:center;gap:16px;
+  font-family:'Space Mono',monospace;font-size:15px;
+  color:rgba(255,255,255,.2);
+}
+#counter{letter-spacing:.06em}
+.nav-btn{
+  width:36px;height:36px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.3);font-size:16px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;user-select:none;
+}
+.nav-btn:hover{border-color:rgba(196,181,253,.4);color:#C4B5FD}
+
+/* QR */
+.qr-block{display:flex;align-items:center;gap:64px;margin-top:48px}
+.qr-img{border-radius:12px;border:1px solid rgba(255,255,255,.08)}
+.qr-links{font-size:24px;line-height:2.4;color:rgba(255,255,255,.35)}
+.qr-links span{color:#67E8F9;font-family:'Space Mono',monospace;font-size:20px}
+
+/* responsive scale */
+#scaler{
+  position:fixed;top:0;left:0;
+  width:100vw;height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+</style>
 </head>
 <body>
-<div class="reveal">
-  <div class="slides">
+<div id="scaler">
+<div class="deck" id="deck">
 
-    <!-- 1. TITLE -->
-    <section>
-      <h3>ClawCon Ankara 2 · 2026</h3>
-      <h1 style="margin:16px 0 12px">context-mode</h1>
-      <h2>The other half of the context problem</h2>
-      <hr class="sep" style="margin-top:32px"/>
-      <p>open-source plugin &nbsp;·&nbsp; commercial platform &nbsp;·&nbsp; 331,200+ developers</p>
-    </section>
-
-    <!-- 2. PROBLEM -->
-    <section>
-      <h3>The Problem</h3>
-      <h1>Your AI is re-reading the same data every turn.</h1>
-      <hr class="sep"/>
-      <p>Every grep, file read, git log — lands in the conversation and gets re-sent every single turn. 50 turns in, one command costs:</p>
-      <span class="big">750,000</span>
-      <p>input tokens &nbsp;·&nbsp; from a single command</p>
-    </section>
-
-    <!-- 3. PLUGIN -->
-    <section>
-      <h3>The Fix</h3>
-      <h1>context-mode</h1>
-      <p>An MCP plugin that intercepts large tool output <strong>before</strong> it hits the context window. Raw data goes into a local store. The agent searches it when it needs to.</p>
-      <div class="mono">npm install -g context-mode</div>
-      <div class="grid">
-        <div class="box"><span class="num">30×</span><span class="lbl">fewer tokens</span></div>
-        <div class="box"><span class="num">17</span><span class="lbl">AI adapters</span></div>
-        <div class="box"><span class="num">331k+</span><span class="lbl">developers</span></div>
-      </div>
-    </section>
-
-    <!-- 4. INSIGHT -->
-    <section>
-      <h3>The Platform</h3>
-      <h1>context-mode Insight</h1>
-      <h2>Do you know how well your team uses AI?</h2>
-      <hr class="sep"/>
-      <p>Productive rate per engineer. Blockers per team. Cost per commit.<br/>Role-narrowed for CTO · EM · IC · FinOps · DevOps · CISO</p>
-      <div class="grid" style="margin-top:28px">
-        <div class="box"><span class="num">222</span><span class="lbl">patterns</span></div>
-        <div class="box"><span class="num">13</span><span class="lbl">MCP tools</span></div>
-        <div class="box"><span class="num">$20</span><span class="lbl">seat / month</span></div>
-      </div>
-    </section>
-
-    <!-- 5. PERSONAS -->
-    <section>
-      <h3>One endpoint · Seven roles</h3>
-      <h2>Same data — different conversation for each role.</h2>
-      <hr class="sep"/>
-      <div class="row"><span class="role">CTO</span><div><div class="q">"What is our AI investment returning?"</div><div class="a">→ 33.3% productive rate · 9 of 27 sessions produced commits · 10 of 17 engineers active</div></div></div>
-      <div class="row" style="margin-top:14px"><span class="role">EM</span><div><div class="q">"Who's stuck on my teams this week?"</div><div class="a">→ 7 engineers inactive · stale file references = 50% of failures · one CLAUDE.md fix</div></div></div>
-      <div class="row" style="margin-top:14px"><span class="role">IC</span><div><div class="q">"How am I doing this week?"</div><div class="a">→ 37m avg session · 36 files surfaced · 20 searches · productive rate improving</div></div></div>
-      <div class="row" style="margin-top:14px"><span class="role">FinOps</span><div><div class="q">"Where is our AI spend going?"</div><div class="a">→ $1.96 this week · 0.9 commits/engineer · each AI commit saves 30–60 min</div></div></div>
-    </section>
-
-    <!-- 6. DASHBOARD -->
-    <section>
-      <h3>Live · platform.context-mode.com · 7d</h3>
-      <h1>What the dashboard shows.</h1>
-      <hr class="sep"/>
-      <div class="grid" style="grid-template-columns:1fr 1fr 1fr 1fr">
-        <div class="box"><span class="num">27</span><span class="lbl">sessions</span></div>
-        <div class="box"><span class="num">97.7%</span><span class="lbl">success rate</span></div>
-        <div class="box"><span class="num">10/17</span><span class="lbl">active members</span></div>
-        <div class="box"><span class="num">33%</span><span class="lbl">productive rate</span></div>
-      </div>
-      <p style="text-align:left">Top failure: <strong>stale file references → 50% of all errors.</strong><br/>
-      The platform names the root cause and tells you the exact fix — not just the error rate.</p>
-    </section>
-
-    <!-- 7. TERMINAL -->
-    <section>
-      <h3>13 MCP Tools</h3>
-      <h2>Ask your team's AI health in plain English.</h2>
-      <hr class="sep"/>
-      <div style="background:#0d1117;border:1px solid #2d3748;border-radius:12px;padding:28px 32px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:0.58em;line-height:1.9;color:#9ca3af">
-        <span style="color:#6b7280">&gt;</span> <span style="color:#e8eaed">find blockers across the team this week</span><br/>
-        <span style="color:#7dd3fc">7 engineers inactive · stale file references (50% of failures)</span><br/>
-        <span style="color:#7dd3fc">Fix: one rule in shared CLAUDE.md</span><br/><br/>
-        <span style="color:#6b7280">&gt;</span> <span style="color:#e8eaed">what changed this week?</span><br/>
-        <span style="color:#7dd3fc">Productive rate up 368% week-over-week</span><br/>
-        <span style="color:#7dd3fc">Team: 10% → 33% commit rate</span>
-      </div>
-    </section>
-
-    <!-- 8. BIG WIN -->
-    <section>
-      <h3>Result</h3>
-      <span class="big">368%</span>
-      <h2>Productive rate improved in one week.</h2>
-      <hr class="sep"/>
-      <p>Same team. Same tools.<br/><strong>They just started measuring.</strong></p>
-    </section>
-
-    <!-- 9. PRICING -->
-    <section>
-      <h3>Get started</h3>
-      <h1 style="font-size:3.5em">$20 <span style="font-size:0.45em;color:#6b7280;font-weight:400">/ seat / month</span></h1>
-      <hr class="sep"/>
-      <p><strong>No deployment. No workflow changes.</strong><br/>Your engineers already have the plugin. Just invite them to the platform.</p>
-      <div class="mono" style="margin-top:20px">platform.context-mode.com</div>
-      <p style="margin-top:16px;font-size:0.5em">Used by engineers at Microsoft · Google · Meta · Stripe · Datadog · Anthropic · Vercel · Cursor</p>
-    </section>
-
-    <!-- 10. CTA + QR -->
-    <section>
-      <h3>Links</h3>
-      <div style="display:flex;align-items:center;gap:60px;justify-content:center;margin-top:20px">
-        <div style="text-align:left;line-height:2.4">
-          <div><span class="muted" style="font-size:0.55em">Plugin →</span> <span class="url">context-mode.com</span></div>
-          <div><span class="muted" style="font-size:0.55em">Platform →</span> <span class="url">context-mode.com/insight</span></div>
-          <div><span class="muted" style="font-size:0.55em">Dashboard →</span> <span class="url">platform.context-mode.com</span></div>
-          <div><span class="muted" style="font-size:0.55em">Speaker →</span> <span class="url">linktr.ee/murataslan</span></div>
-        </div>
-        <div style="text-align:center;flex-shrink:0">
-          <img class="qr"
-            src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&color=AC9EF5&bgcolor=111213&data=https://linktr.ee/murataslan"
-            width="180" height="180" alt="linktr.ee/murataslan" />
-          <p style="font-size:0.42em;margin-top:8px;color:#6b7280">linktr.ee/murataslan</p>
-        </div>
-      </div>
-    </section>
-
+  <!-- 1. TITLE -->
+  <div class="slide active" data-index="0">
+    <div class="eyebrow">ClawCon Ankara 2 · 2026</div>
+    <h1>context-mode</h1>
+    <h2>The other half of the<br/>context problem</h2>
+    <div class="div"></div>
+    <p class="body">open-source plugin &nbsp;·&nbsp; commercial platform &nbsp;·&nbsp; 331,200+ developers</p>
   </div>
+
+  <!-- 2. PROBLEM -->
+  <div class="slide" data-index="1">
+    <div class="eyebrow">The Problem</div>
+    <h1>Your AI re-reads the<br/>same data every turn.</h1>
+    <p class="body" style="margin-bottom:40px">Every grep, file read, git log — lands in the conversation and gets re-sent every single turn. 50 turns in, one command costs:</p>
+    <div class="big-num mono">750,000</div>
+    <p class="body" style="margin-top:16px">input tokens &nbsp;·&nbsp; from a single command</p>
+  </div>
+
+  <!-- 3. PLUGIN -->
+  <div class="slide" data-index="2">
+    <div class="pill">The Fix</div>
+    <h1>context-mode</h1>
+    <p class="body" style="max-width:860px">An MCP plugin that intercepts large tool output <span class="highlight">before</span> it hits the context window. Raw data goes into a local store. The agent searches it when it needs to.</p>
+    <div class="stats" style="margin-top:48px">
+      <div class="stat"><span class="stat-n">30×</span><span class="stat-l">fewer tokens</span></div>
+      <div class="stat"><span class="stat-n">17</span><span class="stat-l">AI adapters</span></div>
+      <div class="stat"><span class="stat-n">331k+</span><span class="stat-l">developers</span></div>
+      <div class="stat" style="border-color:rgba(196,181,253,.2);background:rgba(196,181,253,.04)">
+        <span class="stat-n mono" style="font-size:28px;letter-spacing:-.02em;padding-top:8px">npm i -g<br/>context-mode</span>
+        <span class="stat-l">open source</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. INSIGHT -->
+  <div class="slide" data-index="3">
+    <div class="pill">The Platform</div>
+    <h1>context-mode Insight</h1>
+    <h2>Do you know how well your team uses AI?</h2>
+    <div class="stats" style="margin-top:48px">
+      <div class="stat"><span class="stat-n">222</span><span class="stat-l">patterns</span></div>
+      <div class="stat"><span class="stat-n">13</span><span class="stat-l">MCP tools</span></div>
+      <div class="stat"><span class="stat-n">14</span><span class="stat-l">adapters</span></div>
+      <div class="stat"><span class="stat-n accent">$20</span><span class="stat-l">seat / month</span></div>
+    </div>
+    <p class="body" style="margin-top:36px">Role-narrowed for <span class="highlight">CTO · EM · IC · FinOps · DevOps · CISO</span><br/>Same MCP endpoint — six different conversations.</p>
+  </div>
+
+  <!-- 5. PERSONAS -->
+  <div class="slide" data-index="4">
+    <div class="eyebrow">One endpoint · Seven roles</div>
+    <h1 style="font-size:56px">Same data.<br/>Different question.</h1>
+    <div class="role-list">
+      <div class="role-row">
+        <span class="role-tag">CTO</span>
+        <div><div class="role-q">"What is our AI investment returning this quarter?"</div><div class="role-a">→ 33.3% productive rate · 9 of 27 sessions produced commits · 10/17 engineers active</div></div>
+      </div>
+      <div class="role-row">
+        <span class="role-tag">EM</span>
+        <div><div class="role-q">"Who's stuck on my teams this week?"</div><div class="role-a">→ 7 engineers inactive · stale file references = 50% of failures · one CLAUDE.md fix</div></div>
+      </div>
+      <div class="role-row">
+        <span class="role-tag">IC</span>
+        <div><div class="role-q">"How am I doing this week?"</div><div class="role-a">→ 37m avg session · 36 files surfaced · 20 searches · productive rate improving</div></div>
+      </div>
+      <div class="role-row">
+        <span class="role-tag">FinOps</span>
+        <div><div class="role-q">"Where is our AI spend going?"</div><div class="role-a">→ $1.96 this week · 0.9 commits/engineer · each AI commit saves 30–60 min</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. DASHBOARD -->
+  <div class="slide" data-index="5">
+    <div class="eyebrow">Live · platform.context-mode.com · 7d</div>
+    <h1 style="font-size:60px">What the dashboard shows.</h1>
+    <div class="two-col" style="margin-top:40px">
+      <div class="col">
+        <div class="stats" style="flex-direction:column;gap:16px;margin-top:0">
+          <div style="display:flex;gap:16px">
+            <div class="stat" style="flex:1"><span class="stat-n">27</span><span class="stat-l">sessions</span></div>
+            <div class="stat" style="flex:1"><span class="stat-n">97.7%</span><span class="stat-l">success rate</span></div>
+          </div>
+          <div style="display:flex;gap:16px">
+            <div class="stat" style="flex:1"><span class="stat-n">10/17</span><span class="stat-l">active members</span></div>
+            <div class="stat" style="flex:1"><span class="stat-n">33%</span><span class="stat-l">productive rate</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="col-label">Failure Analysis</div>
+        <div class="bars">
+          <div class="bar-row">
+            <span class="bar-label">Stale file refs</span>
+            <div class="bar-track"><div class="bar-fill" style="width:50%;background:#ef4444"></div></div>
+            <span class="bar-pct">50%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Test failure</span>
+            <div class="bar-track"><div class="bar-fill" style="width:25%;background:#f97316"></div></div>
+            <span class="bar-pct">25%</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Git conflict</span>
+            <div class="bar-track"><div class="bar-fill" style="width:25%;background:#f97316"></div></div>
+            <span class="bar-pct">25%</span>
+          </div>
+        </div>
+        <p class="body" style="margin-top:24px;font-size:20px">The platform names the root cause and tells you the exact fix — not just the error rate.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. TERMINAL -->
+  <div class="slide" data-index="6">
+    <div class="eyebrow">13 MCP Tools</div>
+    <h1 style="font-size:60px">Ask in plain English.</h1>
+    <div class="terminal">
+      <span class="cmd">&gt; find blockers across the team this week</span><br/>
+      <span class="out">  7 engineers inactive — check token or config</span><br/>
+      <span class="out">  stale file references: 50% of all failures</span><br/>
+      <span class="out">  Fix: one rule in shared CLAUDE.md</span><br/><br/>
+      <span class="cmd">&gt; what changed this week?</span><br/>
+      <span class="out">  Productive rate up 368% week-over-week</span><br/>
+      <span class="out">  Team: 10% → 33% commit rate</span><br/>
+      <span class="out">  Error rate trending down — collective mastery improving</span>
+    </div>
+  </div>
+
+  <!-- 8. BIG WIN -->
+  <div class="slide" data-index="7">
+    <div class="eyebrow">Result · This Week</div>
+    <div class="big-num mono">368%</div>
+    <h2 style="margin-top:20px">Productive rate improved in one week.</h2>
+    <div class="div"></div>
+    <p class="body" style="font-size:32px">Same team. Same tools.<br/><span class="highlight">They just started measuring.</span></p>
+  </div>
+
+  <!-- 9. PRICING -->
+  <div class="slide" data-index="8">
+    <div class="eyebrow">Get Started</div>
+    <h1>$20<span style="font-size:.4em;color:rgba(255,255,255,.3);font-weight:300"> / seat / month</span></h1>
+    <div class="div"></div>
+    <p class="body" style="font-size:32px;max-width:800px"><span class="highlight">No deployment. No workflow changes.</span><br/>Your engineers already have the plugin.<br/>Just invite them to the platform.</p>
+    <p class="body mono" style="margin-top:40px;font-size:22px;color:rgba(103,232,249,.7)">platform.context-mode.com</p>
+    <p class="body" style="margin-top:32px;font-size:19px">Used by engineers at Microsoft · Google · Meta · Stripe · Datadog · Anthropic · Vercel · Cursor</p>
+  </div>
+
+  <!-- 10. CTA + QR -->
+  <div class="slide" data-index="9">
+    <div class="eyebrow">Links</div>
+    <h1 style="font-size:56px">context-mode</h1>
+    <div class="qr-block">
+      <div class="qr-links">
+        <div><span style="color:rgba(255,255,255,.2)">Plugin →</span> <span>context-mode.com</span></div>
+        <div><span style="color:rgba(255,255,255,.2)">Platform →</span> <span>context-mode.com/insight</span></div>
+        <div><span style="color:rgba(255,255,255,.2)">Dashboard →</span> <span>platform.context-mode.com</span></div>
+        <div><span style="color:rgba(255,255,255,.2)">Speaker →</span> <span>linktr.ee/murataslan</span></div>
+      </div>
+      <div style="text-align:center">
+        <img class="qr-img"
+          src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=C4B5FD&bgcolor=0D0D0D&data=https://linktr.ee/murataslan"
+          width="220" height="220" alt="linktr.ee/murataslan"/>
+        <p style="font-family:'Space Mono',monospace;font-size:16px;color:rgba(255,255,255,.25);margin-top:14px">linktr.ee/murataslan</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+</div><!-- /scaler -->
+
+<!-- Navigation -->
+<div id="nav">
+  <span id="counter">1 / 10</span>
+  <div class="nav-btn" id="prev">←</div>
+  <div class="nav-btn" id="next">→</div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+
 <script>
-  Reveal.initialize({
-    hash: true,
-    transition: 'fade',
-    transitionSpeed: 'fast',
-    slideNumber: 'c/t',
-    controls: true,
-    progress: true,
-    center: true,
-    width: 1280,
-    height: 720,
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+let cur = 0;
+
+function go(n) {
+  slides[cur].classList.remove('active');
+  cur = (n + total) % total;
+  slides[cur].classList.add('active');
+  document.getElementById('counter').textContent = (cur + 1) + ' / ' + total;
+}
+
+function next() { go(cur + 1); }
+function prev() { go(cur - 1); }
+
+document.getElementById('next').onclick = next;
+document.getElementById('prev').onclick = prev;
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft'  || e.key === 'Backspace')              { e.preventDefault(); prev(); }
+  if (e.key === 'Home') go(0);
+  if (e.key === 'End')  go(total - 1);
+  if (e.key === 'f' || e.key === 'F') {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+});
+
+// click zones: left 30% = prev, right 70% = next
+document.querySelectorAll('.slide').forEach(s => {
+  s.addEventListener('click', e => {
+    if (e.target.classList.contains('nav-btn')) return;
+    e.clientX / window.innerWidth < 0.3 ? prev() : next();
   });
+});
+
+// scale to fill viewport
+function scale() {
+  const scaler = document.getElementById('scaler');
+  const deck   = document.getElementById('deck');
+  const sw = scaler.clientWidth, sh = scaler.clientHeight;
+  const sc = Math.min(sw / 1920, sh / 1080);
+  deck.style.transform = `scale(${sc})`;
+  deck.style.marginLeft = ((sw - 1920 * sc) / 2) + 'px';
+  deck.style.marginTop  = ((sh - 1080 * sc) / 2) + 'px';
+}
+scale();
+window.addEventListener('resize', scale);
 </script>
 </body>
 </html>
