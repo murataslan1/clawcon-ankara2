@@ -5,345 +5,341 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>context-mode — ClawCon Ankara 2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#0D0D0D}
-
-/* dot grid texture */
 body{
   background-color:#0D0D0D;
-  background-image:radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);
-  background-size:32px 32px;
+  background-image:radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:36px 36px;
 }
 
+/* ── SCALE WRAPPER ── */
+#scaler{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+}
 .deck{
   width:1920px;height:1080px;
   position:relative;
   transform-origin:top left;
 }
 
+/* ── SLIDES ── */
 .slide{
   position:absolute;inset:0;
   display:flex;flex-direction:column;justify-content:center;
   padding:0 160px;
   opacity:0;pointer-events:none;
-  transition:opacity .4s ease;
+  transition:opacity .35s ease;
 }
 .slide.active{opacity:1;pointer-events:all}
-
-/* click zones */
-.slide::before,.slide::after{
-  content:'';position:absolute;top:0;bottom:0;z-index:10;cursor:pointer;
+.slide.active .anim{animation:fadeUp .5s ease both}
+.slide.active .anim2{animation:fadeUp .5s .12s ease both}
+.slide.active .anim3{animation:fadeUp .5s .22s ease both}
+.slide.active .anim4{animation:fadeUp .5s .32s ease both}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
 }
-.slide::before{left:0;width:30%}
-.slide::after{right:0;width:70%}
 
-/* typography */
-.eyebrow{
+/* ── TYPE ── */
+.label{
   font-family:'Space Mono',monospace;
-  font-size:18px;letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(255,255,255,.3);
+  font-size:19px;letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(255,255,255,.25);
   margin-bottom:28px;
 }
 h1{
   font-family:'Outfit',sans-serif;font-weight:900;
-  font-size:72px;line-height:1.05;letter-spacing:-.03em;
+  font-size:80px;line-height:1.02;letter-spacing:-.035em;
   color:#fff;
-  margin-bottom:24px;
 }
-h2{
-  font-family:'Outfit',sans-serif;font-weight:600;
-  font-size:48px;line-height:1.2;
-  color:rgba(255,255,255,.5);
-}
-.body{
+h1 em{font-style:normal;color:#C4B5FD}
+.sub{
   font-family:'Outfit',sans-serif;font-weight:300;
-  font-size:28px;line-height:1.6;
-  color:rgba(255,255,255,.55);
-  max-width:900px;
+  font-size:32px;line-height:1.55;
+  color:rgba(255,255,255,.45);
+  max-width:960px;
+  margin-top:20px;
 }
-.accent{color:#C4B5FD}
-.highlight{color:#fff;font-weight:600}
+.sub b{color:rgba(255,255,255,.85);font-weight:600}
 .mono{font-family:'Space Mono',monospace}
 
-/* big number */
-.big-num{
-  font-family:'Space Mono',monospace;font-weight:700;
-  font-size:160px;line-height:1;
-  background:linear-gradient(135deg,#C4B5FD,#67E8F9);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
+/* ── DIVIDER ── */
+.hr{width:56px;height:3px;background:linear-gradient(90deg,#C4B5FD,#67E8F9);border-radius:2px;margin:32px 0}
 
-/* pill */
-.pill{
-  display:inline-block;
-  border:1px solid rgba(196,181,253,.3);
-  color:#C4B5FD;border-radius:100px;
-  font-family:'Space Mono',monospace;font-size:16px;
-  padding:6px 18px;letter-spacing:.06em;text-transform:uppercase;
-  margin-bottom:32px;
+/* ── STATS ── */
+.stats{display:flex;gap:22px;margin-top:48px}
+.s{
+  flex:1;border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:30px 26px;
+  background:rgba(255,255,255,.025);
 }
-
-/* stat cards */
-.stats{display:flex;gap:24px;margin-top:52px}
-.stat{
-  flex:1;
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;padding:32px 28px;
-  background:rgba(255,255,255,.03);
-}
-.stat-n{
+.s-n{
   font-family:'Space Mono',monospace;font-weight:700;
-  font-size:52px;color:#C4B5FD;display:block;line-height:1;
+  font-size:56px;color:#C4B5FD;
+  display:block;line-height:1;
 }
-.stat-l{
-  font-family:'Outfit',sans-serif;font-size:18px;
-  color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;
+.s-l{
+  font-family:'Outfit',sans-serif;font-size:17px;
+  color:rgba(255,255,255,.28);text-transform:uppercase;letter-spacing:.09em;
   display:block;margin-top:10px;
 }
 
-/* divider */
-.div{
-  width:64px;height:3px;
-  background:linear-gradient(90deg,#C4B5FD,#67E8F9);
-  border-radius:2px;margin:36px 0;
+/* ── BIG NUMBER (animated) ── */
+.hero-wrap{margin:24px 0 8px}
+.hero{
+  font-family:'Space Mono',monospace;font-weight:700;
+  font-size:180px;line-height:1;
+  background:linear-gradient(135deg,#C4B5FD 30%,#67E8F9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  display:inline-block;
 }
 
-/* terminal block */
-.terminal{
-  background:#050505;
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:16px;
-  padding:40px 48px;
+/* ── NPM PILL ── */
+.npm{
+  display:inline-block;
+  background:#050505;border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:16px 28px;
+  font-family:'Space Mono',monospace;font-size:26px;
+  color:#67E8F9;margin:28px 0 0;letter-spacing:.02em;
+}
+
+/* ── TERMINAL ── */
+.term{
+  background:#060810;
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;padding:44px 52px;
   font-family:'Space Mono',monospace;
-  font-size:22px;line-height:1.9;
-  color:rgba(255,255,255,.4);
-  max-width:1100px;
-  margin-top:40px;
+  font-size:24px;line-height:2;
+  max-width:1200px;margin-top:36px;
 }
-.terminal .cmd{color:#fff}
-.terminal .out{color:#67E8F9}
+.t-cmd{color:#fff}
+.t-out{color:#67E8F9}
+.t-dim{color:rgba(255,255,255,.25)}
 
-/* role rows */
-.role-list{margin-top:36px;max-width:1100px}
-.role-row{display:flex;gap:40px;padding:18px 0;border-bottom:1px solid rgba(255,255,255,.06)}
-.role-row:last-child{border:none}
-.role-tag{
-  font-family:'Space Mono',monospace;font-size:18px;
-  color:#C4B5FD;font-weight:700;
-  flex-shrink:0;width:90px;padding-top:2px;
+/* ── ROLES ── */
+.roles{margin-top:32px;max-width:1200px}
+.rr{display:flex;gap:44px;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.055)}
+.rr:last-child{border:none}
+.rt{font-family:'Space Mono',monospace;font-size:19px;color:#C4B5FD;font-weight:700;flex-shrink:0;width:96px;padding-top:3px}
+.rq{font-size:22px;color:rgba(255,255,255,.3);margin-bottom:5px}
+.ra{font-size:23px;color:rgba(255,255,255,.78)}
+
+/* ── TWO COL ── */
+.tc{display:flex;gap:80px;align-items:flex-start;margin-top:36px}
+.tc-col{flex:1}
+.tc-label{font-family:'Space Mono',monospace;font-size:16px;color:rgba(255,255,255,.2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
+
+/* ── STAT TABLE ── */
+.mrow{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:22px}
+.mk{color:rgba(255,255,255,.38)}
+.mv{color:#fff;font-weight:600}
+
+/* ── BAR CHART ── */
+.bars{margin-top:4px}
+.brow{display:flex;align-items:center;gap:18px;margin-bottom:20px}
+.bl{font-size:21px;color:rgba(255,255,255,.45);width:240px;flex-shrink:0}
+.bt{flex:1;height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+.bf{height:100%;border-radius:5px;width:0;transition:width 1s .3s ease}
+.bp{font-family:'Space Mono',monospace;font-size:18px;color:rgba(255,255,255,.35);width:46px;text-align:right}
+
+/* ── QR ── */
+.qr-wrap{display:flex;align-items:center;gap:80px;margin-top:44px}
+.qr-links{font-size:26px;line-height:2.5;color:rgba(255,255,255,.32)}
+.qr-links span{font-family:'Space Mono',monospace;font-size:22px;color:#67E8F9}
+.qr-img{border-radius:14px;border:1px solid rgba(255,255,255,.07)}
+
+/* ── FOOTER LINKS ── */
+#links{
+  position:fixed;bottom:26px;left:44px;z-index:200;
+  display:flex;align-items:center;gap:10px;
 }
-.role-q{font-size:22px;color:rgba(255,255,255,.3);margin-bottom:4px}
-.role-a{font-size:22px;color:rgba(255,255,255,.75)}
+#links a{
+  font-family:'Space Mono',monospace;font-size:13px;
+  color:rgba(255,255,255,.2);text-decoration:none;
+  padding:5px 14px;border-radius:6px;
+  border:1px solid rgba(255,255,255,.06);
+  background:rgba(0,0,0,.5);
+  transition:color .2s,border-color .2s,background .2s;
+  backdrop-filter:blur(4px);
+}
+#links a:hover{
+  color:#C4B5FD;
+  border-color:rgba(196,181,253,.35);
+  background:rgba(196,181,253,.07);
+}
+#links .sep{
+  color:rgba(255,255,255,.08);
+  font-family:'Space Mono',monospace;font-size:12px;
+}
 
-/* bar chart */
-.bars{margin-top:40px;max-width:800px}
-.bar-row{display:flex;align-items:center;gap:20px;margin-bottom:18px}
-.bar-label{font-size:20px;color:rgba(255,255,255,.5);width:260px;flex-shrink:0}
-.bar-track{flex:1;height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
-.bar-fill{height:100%;border-radius:5px}
-.bar-pct{font-family:'Space Mono',monospace;font-size:18px;color:rgba(255,255,255,.4);width:44px;text-align:right}
-
-/* two col */
-.two-col{display:flex;gap:80px;align-items:flex-start;margin-top:40px}
-.col{flex:1}
-.col-label{font-family:'Space Mono',monospace;font-size:16px;color:rgba(255,255,255,.25);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
-.metric-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:22px}
-.metric-key{color:rgba(255,255,255,.4)}
-.metric-val{color:#fff;font-weight:600}
-
-/* nav */
+/* ── NAV ── */
 #nav{
-  position:fixed;bottom:36px;right:48px;z-index:100;
-  display:flex;align-items:center;gap:16px;
-  font-family:'Space Mono',monospace;font-size:15px;
-  color:rgba(255,255,255,.2);
+  position:fixed;bottom:32px;right:44px;z-index:100;
+  display:flex;align-items:center;gap:14px;
+  font-family:'Space Mono',monospace;font-size:14px;
+  color:rgba(255,255,255,.18);
 }
-#counter{letter-spacing:.06em}
-.nav-btn{
-  width:36px;height:36px;border-radius:8px;
-  border:1px solid rgba(255,255,255,.1);
-  background:rgba(255,255,255,.04);
-  color:rgba(255,255,255,.3);font-size:16px;
+.nb{
+  width:34px;height:34px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.03);
+  color:rgba(255,255,255,.28);font-size:15px;
   cursor:pointer;display:flex;align-items:center;justify-content:center;
   transition:all .2s;user-select:none;
 }
-.nav-btn:hover{border-color:rgba(196,181,253,.4);color:#C4B5FD}
+.nb:hover{border-color:rgba(196,181,253,.4);color:#C4B5FD;background:rgba(196,181,253,.06)}
 
-/* QR */
-.qr-block{display:flex;align-items:center;gap:64px;margin-top:48px}
-.qr-img{border-radius:12px;border:1px solid rgba(255,255,255,.08)}
-.qr-links{font-size:24px;line-height:2.4;color:rgba(255,255,255,.35)}
-.qr-links span{color:#67E8F9;font-family:'Space Mono',monospace;font-size:20px}
-
-/* responsive scale */
-#scaler{
-  position:fixed;top:0;left:0;
-  width:100vw;height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
+/* ── PROGRESS ── */
+#prog{
+  position:fixed;bottom:0;left:0;right:0;height:2px;
+  background:rgba(255,255,255,.05);z-index:100;
+}
+#prog-fill{
+  height:100%;
+  background:linear-gradient(90deg,#C4B5FD,#67E8F9);
+  transition:width .3s ease;
 }
 </style>
 </head>
 <body>
+
 <div id="scaler">
 <div class="deck" id="deck">
 
-  <!-- 1. TITLE -->
-  <div class="slide active" data-index="0">
-    <div class="eyebrow">ClawCon Ankara 2 · 2026</div>
-    <h1>context-mode</h1>
-    <h2>The other half of the<br/>context problem</h2>
-    <div class="div"></div>
-    <p class="body">open-source plugin &nbsp;·&nbsp; commercial platform &nbsp;·&nbsp; 331,200+ developers</p>
+  <!-- 1 · TITLE ─────────────────────── -->
+  <div class="slide active" id="s0">
+    <div class="label anim">ClawCon Ankara 2 · 2026</div>
+    <h1 class="anim2">context-mode</h1>
+    <div class="sub anim3">The other half of the context problem</div>
+    <div class="hr anim4"></div>
+    <p class="sub anim4" style="font-size:22px">open-source plugin &nbsp;·&nbsp; commercial platform &nbsp;·&nbsp; 331,200+ developers</p>
   </div>
 
-  <!-- 2. PROBLEM -->
-  <div class="slide" data-index="1">
-    <div class="eyebrow">The Problem</div>
-    <h1>Your AI re-reads the<br/>same data every turn.</h1>
-    <p class="body" style="margin-bottom:40px">Every grep, file read, git log — lands in the conversation and gets re-sent every single turn. 50 turns in, one command costs:</p>
-    <div class="big-num mono">750,000</div>
-    <p class="body" style="margin-top:16px">input tokens &nbsp;·&nbsp; from a single command</p>
+  <!-- 2 · PROBLEM ────────────────────── -->
+  <div class="slide" id="s1">
+    <div class="label anim">The Problem</div>
+    <h1 class="anim2" style="font-size:68px">Your AI re-reads<br/>the same data every turn.</h1>
+    <p class="sub anim3" style="margin-top:24px">Every grep, every file read, every git log — gets re-sent every single turn.<br/>50 turns in, one command costs:</p>
+    <div class="hero-wrap anim4">
+      <span class="hero" id="counter1">0</span>
+      <p class="sub" style="margin-top:8px;font-size:22px">input tokens &nbsp;·&nbsp; from a single command</p>
+    </div>
   </div>
 
-  <!-- 3. PLUGIN -->
-  <div class="slide" data-index="2">
-    <div class="pill">The Fix</div>
-    <h1>context-mode</h1>
-    <p class="body" style="max-width:860px">An MCP plugin that intercepts large tool output <span class="highlight">before</span> it hits the context window. Raw data goes into a local store. The agent searches it when it needs to.</p>
-    <div class="stats" style="margin-top:48px">
-      <div class="stat"><span class="stat-n">30×</span><span class="stat-l">fewer tokens</span></div>
-      <div class="stat"><span class="stat-n">17</span><span class="stat-l">AI adapters</span></div>
-      <div class="stat"><span class="stat-n">331k+</span><span class="stat-l">developers</span></div>
-      <div class="stat" style="border-color:rgba(196,181,253,.2);background:rgba(196,181,253,.04)">
-        <span class="stat-n mono" style="font-size:28px;letter-spacing:-.02em;padding-top:8px">npm i -g<br/>context-mode</span>
-        <span class="stat-l">open source</span>
+  <!-- 3 · FIX ────────────────────────── -->
+  <div class="slide" id="s2">
+    <div class="label anim">The Fix</div>
+    <h1 class="anim2">context-mode</h1>
+    <p class="sub anim3">Intercepts large tool output <b>before</b> it hits the context window.<br/>Raw data → local store. Agent searches when it needs to.</p>
+    <div class="stats anim4">
+      <div class="s"><span class="s-n">30×</span><span class="s-l">fewer tokens</span></div>
+      <div class="s"><span class="s-n">17</span><span class="s-l">AI adapters</span></div>
+      <div class="s"><span class="s-n">331k+</span><span class="s-l">developers</span></div>
+      <div class="s" style="border-color:rgba(196,181,253,.18);background:rgba(196,181,253,.04)">
+        <span class="s-n mono" style="font-size:26px;padding-top:6px">npm i -g<br/>context-mode</span>
+        <span class="s-l">open source · ELv2</span>
       </div>
     </div>
   </div>
 
-  <!-- 4. INSIGHT -->
-  <div class="slide" data-index="3">
-    <div class="pill">The Platform</div>
-    <h1>context-mode Insight</h1>
-    <h2>Do you know how well your team uses AI?</h2>
-    <div class="stats" style="margin-top:48px">
-      <div class="stat"><span class="stat-n">222</span><span class="stat-l">patterns</span></div>
-      <div class="stat"><span class="stat-n">13</span><span class="stat-l">MCP tools</span></div>
-      <div class="stat"><span class="stat-n">14</span><span class="stat-l">adapters</span></div>
-      <div class="stat"><span class="stat-n accent">$20</span><span class="stat-l">seat / month</span></div>
-    </div>
-    <p class="body" style="margin-top:36px">Role-narrowed for <span class="highlight">CTO · EM · IC · FinOps · DevOps · CISO</span><br/>Same MCP endpoint — six different conversations.</p>
-  </div>
-
-  <!-- 5. PERSONAS -->
-  <div class="slide" data-index="4">
-    <div class="eyebrow">One endpoint · Seven roles</div>
-    <h1 style="font-size:56px">Same data.<br/>Different question.</h1>
-    <div class="role-list">
-      <div class="role-row">
-        <span class="role-tag">CTO</span>
-        <div><div class="role-q">"What is our AI investment returning this quarter?"</div><div class="role-a">→ 33.3% productive rate · 9 of 27 sessions produced commits · 10/17 engineers active</div></div>
-      </div>
-      <div class="role-row">
-        <span class="role-tag">EM</span>
-        <div><div class="role-q">"Who's stuck on my teams this week?"</div><div class="role-a">→ 7 engineers inactive · stale file references = 50% of failures · one CLAUDE.md fix</div></div>
-      </div>
-      <div class="role-row">
-        <span class="role-tag">IC</span>
-        <div><div class="role-q">"How am I doing this week?"</div><div class="role-a">→ 37m avg session · 36 files surfaced · 20 searches · productive rate improving</div></div>
-      </div>
-      <div class="role-row">
-        <span class="role-tag">FinOps</span>
-        <div><div class="role-q">"Where is our AI spend going?"</div><div class="role-a">→ $1.96 this week · 0.9 commits/engineer · each AI commit saves 30–60 min</div></div>
-      </div>
+  <!-- 4 · INSIGHT ─────────────────────── -->
+  <div class="slide" id="s3">
+    <div class="label anim">The Platform</div>
+    <h1 class="anim2">context-mode<br/><em>Insight</em></h1>
+    <p class="sub anim3" style="margin-top:16px">Your engineers already run context-mode.<br/>Insight is the org layer on top — flip a switch, see what your team is doing.</p>
+    <div class="stats anim4">
+      <div class="s"><span class="s-n">222</span><span class="s-l">patterns</span></div>
+      <div class="s"><span class="s-n">13</span><span class="s-l">MCP tools</span></div>
+      <div class="s"><span class="s-n">14</span><span class="s-l">adapters</span></div>
+      <div class="s" style="border-color:rgba(196,181,253,.18)"><span class="s-n" style="color:#67E8F9">$20</span><span class="s-l">seat / month</span></div>
     </div>
   </div>
 
-  <!-- 6. DASHBOARD -->
-  <div class="slide" data-index="5">
-    <div class="eyebrow">Live · platform.context-mode.com · 7d</div>
-    <h1 style="font-size:60px">What the dashboard shows.</h1>
-    <div class="two-col" style="margin-top:40px">
-      <div class="col">
-        <div class="stats" style="flex-direction:column;gap:16px;margin-top:0">
-          <div style="display:flex;gap:16px">
-            <div class="stat" style="flex:1"><span class="stat-n">27</span><span class="stat-l">sessions</span></div>
-            <div class="stat" style="flex:1"><span class="stat-n">97.7%</span><span class="stat-l">success rate</span></div>
-          </div>
-          <div style="display:flex;gap:16px">
-            <div class="stat" style="flex:1"><span class="stat-n">10/17</span><span class="stat-l">active members</span></div>
-            <div class="stat" style="flex:1"><span class="stat-n">33%</span><span class="stat-l">productive rate</span></div>
-          </div>
-        </div>
+  <!-- 5 · PERSONAS ────────────────────── -->
+  <div class="slide" id="s4">
+    <div class="label anim">One endpoint · Seven roles</div>
+    <h1 class="anim2" style="font-size:62px">Same data.<br/>Different question.</h1>
+    <div class="roles anim3">
+      <div class="rr"><span class="rt">CTO</span><div><div class="rq">"What is our AI investment returning?"</div><div class="ra">→ 33.3% productive rate · 9 of 27 sessions produced commits · 10/17 engineers active</div></div></div>
+      <div class="rr"><span class="rt">EM</span><div><div class="rq">"Who's stuck on my teams this week?"</div><div class="ra">→ 7 engineers inactive · stale file errors = 50% of failures · one CLAUDE.md fix</div></div></div>
+      <div class="rr"><span class="rt">IC</span><div><div class="rq">"How am I doing this week?"</div><div class="ra">→ 37m avg session · 36 files surfaced · 20 searches · productive rate improving</div></div></div>
+      <div class="rr"><span class="rt">FinOps</span><div><div class="rq">"Where is our AI spend going?"</div><div class="ra">→ $1.96 this week · 0.9 commits/engineer · each AI commit saves ~45 min</div></div></div>
+    </div>
+  </div>
+
+  <!-- 6 · DASHBOARD ───────────────────── -->
+  <div class="slide" id="s5">
+    <div class="label anim">Live · platform.context-mode.com · 7d</div>
+    <h1 class="anim2" style="font-size:64px">What the dashboard shows.</h1>
+    <div class="tc anim3">
+      <div class="tc-col">
+        <div class="tc-label">This week</div>
+        <div class="mrow"><span class="mk">Sessions</span><span class="mv">27</span></div>
+        <div class="mrow"><span class="mk">Success rate</span><span class="mv">97.7%</span></div>
+        <div class="mrow"><span class="mk">Active members</span><span class="mv">10 / 17</span></div>
+        <div class="mrow"><span class="mk">Productive rate</span><span class="mv">33.3%</span></div>
+        <div class="mrow" style="border:none"><span class="mk">Avg session</span><span class="mv">37 min</span></div>
       </div>
-      <div class="col">
-        <div class="col-label">Failure Analysis</div>
+      <div class="tc-col">
+        <div class="tc-label">Failure Analysis</div>
         <div class="bars">
-          <div class="bar-row">
-            <span class="bar-label">Stale file refs</span>
-            <div class="bar-track"><div class="bar-fill" style="width:50%;background:#ef4444"></div></div>
-            <span class="bar-pct">50%</span>
-          </div>
-          <div class="bar-row">
-            <span class="bar-label">Test failure</span>
-            <div class="bar-track"><div class="bar-fill" style="width:25%;background:#f97316"></div></div>
-            <span class="bar-pct">25%</span>
-          </div>
-          <div class="bar-row">
-            <span class="bar-label">Git conflict</span>
-            <div class="bar-track"><div class="bar-fill" style="width:25%;background:#f97316"></div></div>
-            <span class="bar-pct">25%</span>
-          </div>
+          <div class="brow"><span class="bl">Stale file refs</span><div class="bt"><div class="bf" id="b1" style="background:#ef4444"></div></div><span class="bp">50%</span></div>
+          <div class="brow"><span class="bl">Test failure</span><div class="bt"><div class="bf" id="b2" style="background:#f97316"></div></div><span class="bp">25%</span></div>
+          <div class="brow"><span class="bl">Git conflict</span><div class="bt"><div class="bf" id="b3" style="background:#f97316"></div></div><span class="bp">25%</span></div>
         </div>
-        <p class="body" style="margin-top:24px;font-size:20px">The platform names the root cause and tells you the exact fix — not just the error rate.</p>
+        <p class="sub" style="font-size:20px;margin-top:20px">Platform names the root cause + exact fix.<br/>Not just the error rate.</p>
       </div>
     </div>
   </div>
 
-  <!-- 7. TERMINAL -->
-  <div class="slide" data-index="6">
-    <div class="eyebrow">13 MCP Tools</div>
-    <h1 style="font-size:60px">Ask in plain English.</h1>
-    <div class="terminal">
-      <span class="cmd">&gt; find blockers across the team this week</span><br/>
-      <span class="out">  7 engineers inactive — check token or config</span><br/>
-      <span class="out">  stale file references: 50% of all failures</span><br/>
-      <span class="out">  Fix: one rule in shared CLAUDE.md</span><br/><br/>
-      <span class="cmd">&gt; what changed this week?</span><br/>
-      <span class="out">  Productive rate up 368% week-over-week</span><br/>
-      <span class="out">  Team: 10% → 33% commit rate</span><br/>
-      <span class="out">  Error rate trending down — collective mastery improving</span>
+  <!-- 7 · TERMINAL ───────────────────── -->
+  <div class="slide" id="s6">
+    <div class="label anim">13 MCP Tools</div>
+    <h1 class="anim2" style="font-size:64px">Ask in plain English.</h1>
+    <div class="term anim3">
+      <div><span class="t-dim">&gt;</span> <span class="t-cmd">find blockers across the team this week</span></div>
+      <div><span class="t-out">&nbsp;&nbsp;7 engineers inactive — check token or config</span></div>
+      <div><span class="t-out">&nbsp;&nbsp;stale file references: 50% of all failures</span></div>
+      <div><span class="t-out">&nbsp;&nbsp;Fix: one rule in your shared CLAUDE.md</span></div>
+      <br/>
+      <div><span class="t-dim">&gt;</span> <span class="t-cmd">what changed this week?</span></div>
+      <div><span class="t-out">&nbsp;&nbsp;Productive rate up 368% week-over-week</span></div>
+      <div><span class="t-out">&nbsp;&nbsp;Team: 10% → 33% commit rate</span></div>
+      <div><span class="t-out">&nbsp;&nbsp;Error rate trending down — collective mastery improving</span></div>
     </div>
   </div>
 
-  <!-- 8. BIG WIN -->
-  <div class="slide" data-index="7">
-    <div class="eyebrow">Result · This Week</div>
-    <div class="big-num mono">368%</div>
-    <h2 style="margin-top:20px">Productive rate improved in one week.</h2>
-    <div class="div"></div>
-    <p class="body" style="font-size:32px">Same team. Same tools.<br/><span class="highlight">They just started measuring.</span></p>
+  <!-- 8 · BIG WIN ─────────────────────── -->
+  <div class="slide" id="s7">
+    <div class="label anim">Result · This Week</div>
+    <div class="hero-wrap anim2">
+      <span class="hero" id="counter2">0</span><span class="hero" style="font-size:80px;background:none;-webkit-text-fill-color:rgba(255,255,255,.3)">%</span>
+    </div>
+    <h1 class="anim3" style="font-size:52px;color:rgba(255,255,255,.6);font-weight:400">Productive rate improved in one week.</h1>
+    <div class="hr anim4"></div>
+    <p class="sub anim4" style="font-size:34px">Same team. Same tools.<br/><b>They just started measuring.</b></p>
   </div>
 
-  <!-- 9. PRICING -->
-  <div class="slide" data-index="8">
-    <div class="eyebrow">Get Started</div>
-    <h1>$20<span style="font-size:.4em;color:rgba(255,255,255,.3);font-weight:300"> / seat / month</span></h1>
-    <div class="div"></div>
-    <p class="body" style="font-size:32px;max-width:800px"><span class="highlight">No deployment. No workflow changes.</span><br/>Your engineers already have the plugin.<br/>Just invite them to the platform.</p>
-    <p class="body mono" style="margin-top:40px;font-size:22px;color:rgba(103,232,249,.7)">platform.context-mode.com</p>
-    <p class="body" style="margin-top:32px;font-size:19px">Used by engineers at Microsoft · Google · Meta · Stripe · Datadog · Anthropic · Vercel · Cursor</p>
+  <!-- 9 · PRICING ─────────────────────── -->
+  <div class="slide" id="s8">
+    <div class="label anim">Get Started</div>
+    <h1 class="anim2">$20<span style="font-size:.38em;color:rgba(255,255,255,.28);font-weight:300"> / seat / month</span></h1>
+    <div class="hr anim3"></div>
+    <p class="sub anim3" style="font-size:34px;max-width:880px"><b>No deployment. No workflow changes.</b><br/>Your engineers already have the plugin.<br/>Just invite them to the platform.</p>
+    <p class="sub anim4 mono" style="margin-top:40px;font-size:24px;color:rgba(103,232,249,.7)">platform.context-mode.com</p>
+    <p class="sub anim4" style="margin-top:28px;font-size:20px">Engineers at Microsoft · Google · Meta · Stripe · Datadog · Anthropic · Vercel · Cursor</p>
   </div>
 
-  <!-- 10. CTA + QR -->
-  <div class="slide" data-index="9">
-    <div class="eyebrow">Links</div>
-    <h1 style="font-size:56px">context-mode</h1>
-    <div class="qr-block">
+  <!-- 10 · CTA + QR ──────────────────── -->
+  <div class="slide" id="s9">
+    <div class="label anim">Links</div>
+    <h1 class="anim2" style="font-size:64px">context-mode</h1>
+    <div class="qr-wrap anim3">
       <div class="qr-links">
         <div><span style="color:rgba(255,255,255,.2)">Plugin →</span> <span>context-mode.com</span></div>
         <div><span style="color:rgba(255,255,255,.2)">Platform →</span> <span>context-mode.com/insight</span></div>
@@ -352,9 +348,9 @@ h2{
       </div>
       <div style="text-align:center">
         <img class="qr-img"
-          src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&color=C4B5FD&bgcolor=0D0D0D&data=https://linktr.ee/murataslan"
-          width="220" height="220" alt="linktr.ee/murataslan"/>
-        <p style="font-family:'Space Mono',monospace;font-size:16px;color:rgba(255,255,255,.25);margin-top:14px">linktr.ee/murataslan</p>
+          src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&color=C4B5FD&bgcolor=0D0D0D&data=https://linktr.ee/murataslan"
+          width="240" height="240" alt="QR"/>
+        <p class="mono" style="font-size:16px;color:rgba(255,255,255,.2);margin-top:14px">linktr.ee/murataslan</p>
       </div>
     </div>
   </div>
@@ -362,62 +358,126 @@ h2{
 </div><!-- /deck -->
 </div><!-- /scaler -->
 
-<!-- Navigation -->
-<div id="nav">
-  <span id="counter">1 / 10</span>
-  <div class="nav-btn" id="prev">←</div>
-  <div class="nav-btn" id="next">→</div>
+<!-- FOOTER LINKS -->
+<div id="links">
+  <a href="https://context-mode.com" target="_blank" rel="noopener">context-mode.com</a>
+  <span class="sep">·</span>
+  <a href="https://context-mode.com/insight" target="_blank" rel="noopener">context-mode.com/insight</a>
+  <span class="sep">·</span>
+  <a href="https://platform.context-mode.com" target="_blank" rel="noopener">platform.context-mode.com</a>
 </div>
 
+<!-- NAV -->
+<div id="nav">
+  <span id="cnt">1 / 10</span>
+  <div class="nb" id="pb">←</div>
+  <div class="nb" id="nb">→</div>
+</div>
+<div id="prog"><div id="prog-fill"></div></div>
+
 <script>
-const slides = document.querySelectorAll('.slide');
-const total = slides.length;
+// ── CONFIG ──────────────────────────────
+const TOTAL = 10;
 let cur = 0;
 
-function go(n) {
-  slides[cur].classList.remove('active');
-  cur = (n + total) % total;
-  slides[cur].classList.add('active');
-  document.getElementById('counter').textContent = (cur + 1) + ' / ' + total;
+// ── ANIMATED COUNTER ────────────────────
+function countTo(el, target, duration) {
+  let start = 0, step = target / (duration / 16);
+  let id = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = Math.floor(start).toLocaleString();
+    if (start >= target) clearInterval(id);
+  }, 16);
 }
 
-function next() { go(cur + 1); }
-function prev() { go(cur - 1); }
+// ── ANIMATED BARS ───────────────────────
+function animBars() {
+  const data = [{id:'b1',w:'50%'},{id:'b2',w:'25%'},{id:'b3',w:'25%'}];
+  data.forEach(d => {
+    const el = document.getElementById(d.id);
+    if (el) setTimeout(() => el.style.width = d.w, 200);
+  });
+}
 
-document.getElementById('next').onclick = next;
-document.getElementById('prev').onclick = prev;
+// ── RESET BARS ──────────────────────────
+function resetBars() {
+  ['b1','b2','b3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.width = '0';
+  });
+}
+
+// ── SLIDE LOGIC ─────────────────────────
+function go(n) {
+  const slides = document.querySelectorAll('.slide');
+  slides[cur].classList.remove('active');
+  // reset animations
+  slides[cur].querySelectorAll('.anim,.anim2,.anim3,.anim4').forEach(el => {
+    el.style.animation = 'none';
+    void el.offsetWidth; // reflow
+    el.style.animation = '';
+  });
+
+  cur = ((n % TOTAL) + TOTAL) % TOTAL;
+  slides[cur].classList.add('active');
+
+  // trigger per-slide effects
+  if (cur === 1) { // problem — counter to 750000
+    const el = document.getElementById('counter1');
+    if (el) { el.textContent = '0'; setTimeout(() => countTo(el, 750000, 1600), 400); }
+  }
+  if (cur === 5) animBars(); else resetBars(); // dashboard bars
+  if (cur === 7) { // 368%
+    const el = document.getElementById('counter2');
+    if (el) { el.textContent = '0'; setTimeout(() => countTo(el, 368, 900), 300); }
+  }
+
+  // nav
+  document.getElementById('cnt').textContent = (cur+1) + ' / ' + TOTAL;
+  document.getElementById('prog-fill').style.width = ((cur+1)/TOTAL*100) + '%';
+}
+
+document.getElementById('nb').onclick = () => go(cur + 1);
+document.getElementById('pb').onclick = () => go(cur - 1);
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); next(); }
-  if (e.key === 'ArrowLeft'  || e.key === 'Backspace')              { e.preventDefault(); prev(); }
+  if (['ArrowRight','Space','Enter'].includes(e.code)) { e.preventDefault(); go(cur+1); }
+  if (['ArrowLeft','Backspace'].includes(e.code))      { e.preventDefault(); go(cur-1); }
   if (e.key === 'Home') go(0);
-  if (e.key === 'End')  go(total - 1);
-  if (e.key === 'f' || e.key === 'F') {
-    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-    else document.exitFullscreen();
+  if (e.key === 'End')  go(TOTAL-1);
+  if (e.key.toLowerCase() === 'f') {
+    document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
   }
 });
 
 // click zones: left 30% = prev, right 70% = next
-document.querySelectorAll('.slide').forEach(s => {
-  s.addEventListener('click', e => {
-    if (e.target.classList.contains('nav-btn')) return;
-    e.clientX / window.innerWidth < 0.3 ? prev() : next();
-  });
+document.addEventListener('click', e => {
+  if (e.target.closest('#nav') || e.target.closest('#links')) return;
+  e.clientX / window.innerWidth < 0.3 ? go(cur-1) : go(cur+1);
 });
 
-// scale to fill viewport
+// touch swipe
+let tx = 0;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX, {passive:true});
+document.addEventListener('touchend', e => {
+  const dx = tx - e.changedTouches[0].clientX;
+  if (Math.abs(dx) > 50) dx > 0 ? go(cur+1) : go(cur-1);
+}, {passive:true});
+
+// ── SCALE TO VIEWPORT ───────────────────
 function scale() {
-  const scaler = document.getElementById('scaler');
-  const deck   = document.getElementById('deck');
-  const sw = scaler.clientWidth, sh = scaler.clientHeight;
-  const sc = Math.min(sw / 1920, sh / 1080);
-  deck.style.transform = `scale(${sc})`;
-  deck.style.marginLeft = ((sw - 1920 * sc) / 2) + 'px';
-  deck.style.marginTop  = ((sh - 1080 * sc) / 2) + 'px';
+  const sc = document.getElementById('scaler');
+  const dk = document.getElementById('deck');
+  const s  = Math.min(sc.clientWidth/1920, sc.clientHeight/1080);
+  dk.style.transform = `scale(${s})`;
+  dk.style.marginLeft = ((sc.clientWidth  - 1920*s)/2)+'px';
+  dk.style.marginTop  = ((sc.clientHeight - 1080*s)/2)+'px';
 }
 scale();
 window.addEventListener('resize', scale);
+
+// init progress
+document.getElementById('prog-fill').style.width = (1/TOTAL*100)+'%';
 </script>
 </body>
 </html>
